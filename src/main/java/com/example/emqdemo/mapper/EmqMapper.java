@@ -1,10 +1,12 @@
 package com.example.emqdemo.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 
 @Mapper
+@Repository
 public interface EmqMapper {
 
     void onChange (Map<String, Object> mapJson);

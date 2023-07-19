@@ -1,15 +1,16 @@
 package com.example.emqdemo.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.emqdemo.domain.MqttConfiguration;
 import com.example.emqdemo.domain.Topic;
 import com.example.emqdemo.service.EmqService;
-import com.example.emqdemo.util.mqttUtil.MqttPushClient;
-import com.example.emqdemo.domain.MqttConfiguration;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
+import com.example.emqdemo.util.mqttUtil.MqttPushClient;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -21,8 +22,6 @@ public class PushCallback implements MqttCallback {
 
     private MqttPushClient client;
     private MqttConfiguration mqttConfiguration;
-
-    private EmqService emqService;
 
     public PushCallback(MqttPushClient client ,MqttConfiguration mqttConfiguration) {
         this.client = client;
@@ -63,10 +62,9 @@ public class PushCallback implements MqttCallback {
      * 监听对应的主题消息
      * @param topic
      * @param message
-     * @throws Exception
      */
     @Override
-    public void messageArrived(String topic, MqttMessage message) throws Exception {
+    public void messageArrived(String topic, MqttMessage message) {
         // subscribe后得到的消息会执行到这里面
         String payload = new String(message.getPayload());
 
@@ -88,8 +86,8 @@ public class PushCallback implements MqttCallback {
                 mapJson.replace(key,date);
             }
         }
-//        //实例化入库方法
-//        EmqServiceImpl emqService=SpringUtil.getBean(EmqServiceImpl.class);
+        //实例化入库方法
+        EmqServiceImpl emqService=SpringUtil.getBean(EmqServiceImpl.class);
         //调用入库方法
         if (Topic.VALUES_ONCHANGE.equals(topic)){
             emqService.onChange(mapJson);
@@ -106,5 +104,6 @@ public class PushCallback implements MqttCallback {
         }else{
             log.error("======》》未识别的topic - {}",payload);
         }
+        log.info("消息处理结束");
     }
 }
