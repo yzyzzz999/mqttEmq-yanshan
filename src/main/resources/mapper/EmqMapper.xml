@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.emqdemo.mapper.EmqMapper">
+    <insert id="onChange">
+        INSERT INTO emq_onchange (`dev_code`,`online_status`,`send_time`,`seq_id`,`values`) VALUES (#{DevCode},#{OnlineStatus},#{SendTime},#{Seqld"},#{values})
+    </insert>
+
+    <insert id="interval">
+        INSERT INTO emq_interval (`dev_code`,`online_status`,`send_time`,`seq_id`,`values`) VALUES (#{DevCode},#{OnlineStatus},#{SendTime},#{Seqld"},#{values})
+    </insert>
+
+    <insert id="set">
+        insert into emq_set(`guid`,`point`,`value`) values (#{guid},#{point},#{value})
+    </insert>
+
+    <insert id="resp">
+        insert into emq_resp(`guid`,`code`,`msg`) VALUES (#{guid},#{code},#{msg})
+    </insert>
+
+    <insert id="upload">
+        insert into emq_upload(`alarm_desc`,`alarm_device`,`alarm_gen_value`,`alarm_guid`,`alarm_index`,`alarm_level`,`alarm_point`,`alarm_start`,`alarm_status`)
+        values (#{AlarmDesc},#{AlarmDevice},#{AlarmGenValue},#{AlarmGuid},#{AlarmIndex},#{AlarmLevel},#{AlarmPoint},#{AlarmStart},#{AlarmStatus})
+    </insert>
+
+    <insert id="upoverload">
+        insert into emq_upoverload(`alarm_desc`,`alarm_device`,`alarm_gen_value`,`alarm_guid`,`alarm_index`,`alarm_level`,`alarm_point`,`alarm_start`,`alarm_status`)
+        values (#{AlarmDesc},#{AlarmDevice},#{AlarmGenValue},#{AlarmGuid},#{AlarmIndex},#{AlarmLevel},#{AlarmPoint},#{AlarmStart},#{AlarmStatus})
+    </insert>
+</mapper>
