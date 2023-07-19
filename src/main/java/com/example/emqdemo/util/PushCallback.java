@@ -2,6 +2,7 @@ package com.example.emqdemo.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.example.emqdemo.domain.Topic;
+import com.example.emqdemo.service.EmqService;
 import com.example.emqdemo.util.mqttUtil.MqttPushClient;
 import com.example.emqdemo.domain.MqttConfiguration;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
@@ -20,6 +21,8 @@ public class PushCallback implements MqttCallback {
 
     private MqttPushClient client;
     private MqttConfiguration mqttConfiguration;
+
+    private EmqService emqService;
 
     public PushCallback(MqttPushClient client ,MqttConfiguration mqttConfiguration) {
         this.client = client;
@@ -85,8 +88,8 @@ public class PushCallback implements MqttCallback {
                 mapJson.replace(key,date);
             }
         }
-        //实例化入库方法
-        EmqServiceImpl emqService=SpringUtil.getBean(EmqServiceImpl.class);
+//        //实例化入库方法
+//        EmqServiceImpl emqService=SpringUtil.getBean(EmqServiceImpl.class);
         //调用入库方法
         if (Topic.VALUES_ONCHANGE.equals(topic)){
             emqService.onChange(mapJson);
