@@ -4,10 +4,12 @@ import com.example.emqdemo.mapper.EmqMapper;
 import com.example.emqdemo.service.EmqService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class EmqServiceImpl implements EmqService {
 
     @Autowired
