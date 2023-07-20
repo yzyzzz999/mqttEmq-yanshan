@@ -3,14 +3,12 @@ package com.example.emqdemo.util;
 import com.alibaba.fastjson.JSONObject;
 import com.example.emqdemo.domain.MqttConfiguration;
 import com.example.emqdemo.domain.Topic;
-import com.example.emqdemo.service.EmqService;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
 import com.example.emqdemo.util.mqttUtil.MqttPushClient;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,7 +28,7 @@ public class PushCallback implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable cause) {
-        /** 连接丢失后，一般在这里面进行重连 **/
+        /* 连接丢失后，一般在这里面进行重连 **/
         if(client != null) {
             while (true) {
                 try {
@@ -60,8 +58,8 @@ public class PushCallback implements MqttCallback {
 
     /**
      * 监听对应的主题消息
-     * @param topic
-     * @param message
+     * @param topic 主题
+     * @param message mqtt消息
      */
     @Override
     public void messageArrived(String topic, MqttMessage message) {
