@@ -34,11 +34,12 @@ class EmqdemoApplicationTests {
 
     @Test
     void test(){
-        String Payload = "{\"DevCode\":\"123124\",\"OnlineStatus\":1,\"SendTime\":1689754853894,\"SeqId\":4,\"values\":{\"Pump speed feedback\":0,\"Pump working mode setting\":0}}";
+        String Payload = "{\"AlarmDesc\":\"[CO,H2S,02,CH4四合一传感器][泵转速反馈][0RPM][泵吸停机或者故障]\",\"AlarmDevice\":\"Four in one sensor\",\"AlarmGenValue\":0,\"AlarmGuid\":\"baeb1bf-643-489-5a-78fefeded4ha\",\"AlarmIndex\":null,\"AlarmLevel\":2,\"AlarmPoint\":\"Pump speed fehack\",\"AlarmStart\":168975600900,\"AlarmStatus\":1}";
         JSONObject json  =  JSONObject.parseObject(Payload);
         Map<String,Object> mapJson = json.getInnerMap();
+        System.out.println(mapJson.keySet());
         for (String key: mapJson.keySet()){
-            mapJson.replace(key,mapJson.get(key).toString());
+                mapJson.replace(key,String.valueOf(mapJson.get(key)));
             if ("SendTime".equals(key)){
                 Date date = new Date(Long.parseLong((String) mapJson.get(key)));
                 mapJson.replace(key,date);
@@ -48,7 +49,7 @@ class EmqdemoApplicationTests {
             }
         }
         EmqServiceImpl emqService= SpringUtil.getBean(EmqServiceImpl.class);
-        emqService.interval(mapJson);
+        emqService.upload(mapJson);
     }
 
 }

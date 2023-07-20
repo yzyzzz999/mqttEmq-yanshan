@@ -77,7 +77,7 @@ public class PushCallback implements MqttCallback {
         JSONObject json  =  JSONObject.parseObject(payload);
         Map<String,Object> mapJson = json.getInnerMap();
         for (String key: mapJson.keySet()){
-            mapJson.replace(key,mapJson.get(key).toString());
+            mapJson.replace(key,String.valueOf(mapJson.get(key)));
             if ("SendTime".equals(key)){
                 Date date = new Date(Long.parseLong((String) mapJson.get(key)));
                 mapJson.replace(key,date);
