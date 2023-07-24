@@ -34,7 +34,7 @@ class EmqdemoApplicationTests {
 
     @Test
     void test(){
-        String Payload = "{\"AlarmDesc\":\"[CO,H2S,02,CH4四合一传感器][泵转速反馈][0RPM][泵吸停机或者故障]\",\"AlarmDevice\":\"Four in one sensor\",\"AlarmGenValue\":0,\"AlarmGuid\":\"baeb1bf-643-489-5a-78fefeded4ha\",\"AlarmIndex\":null,\"AlarmLevel\":2,\"AlarmPoint\":\"Pump speed fehack\",\"AlarmStart\":168975600900,\"AlarmStatus\":1}";
+        String Payload = "{\"AlarmDesc\":\"这是一条测试\",\"AlarmDevice\":\"这是一条测试\",\"AlarmGenValue\":0,\"AlarmGuid\":\"baeb1bf-643-489-5a-78fefeded4ha\",\"AlarmIndex\":null,\"AlarmLevel\":2,\"AlarmPoint\":\"Pump speed fehack\",\"AlarmStart\":168975600900,\"AlarmStatus\":1}";
         JSONObject json  =  JSONObject.parseObject(Payload);
         Map<String,Object> mapJson = json.getInnerMap();
         System.out.println(mapJson.keySet());
