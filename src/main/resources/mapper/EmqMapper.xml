@@ -2,11 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.emqdemo.mapper.EmqMapper">
     <insert id="onChange">
-        INSERT INTO emq_onchange (`dev_code`,`online_status`,`send_time`,`seq_id`,`values`) VALUES (#{DevCode},#{OnlineStatus},#{SendTime},#{SeqId},#{values})
+        INSERT INTO emq_onchange (`dev_code`,`online_status`,`send_time`,`seq_id`,`values`,`ip_address_2`,`ip_address_3`,`ip_address_4`,`pump_working_mode_setting`,`eth_working_mode`,`wifi_switch`,`address_485`,`gateway_2`,`gateway_1`,`gateway_4`,`gateway_3`,`type`,`modbus_port`,`baud_code`,`mask_2`,`embedded_version`,`mask_1`,`mask_4`,`ip_address_1`,`parity_check`,`mask_3`)
+        VALUES (#{DevCode},#{OnlineStatus},#{SendTime},#{SeqId},#{values},#{ipAddress2},#{ipAddress3},#{ipAddress4},#{pumpWorkingModeSetting},#{ethWorkingMode},#{wifiSwitch},#{address458},#{gateWay2},#{gateWay1},#{gateWay4},#{gateWay3},#{type},#{modbusPort},#{baudCode},#{mask2},#{embeddedVersion},#{mask1},#{mask4},#{ipAddress1},#{parityCheck},#{mask3})
     </insert>
 
     <insert id="interval">
-        INSERT INTO emq_interval (`dev_code`,`online_status`,`send_time`,`seq_id`,`values`) VALUES (#{DevCode},#{OnlineStatus},#{SendTime},#{SeqId},#{values})
+        INSERT INTO emq_interval (`dev_code`,`online_status`,`send_time`,`seq_id`,`values`,`ip_address_2`,`ip_address_3`,`ip_address_4`,`pump_working_mode_setting`,`eth_working_mode`,`wifi_switch`,`address_485`,`gateway_2`,`gateway_1`,`gateway_3`,`gateway_4`,`type`,`modbus_port`,`baud_code`,`mask_2`,`embedded_version`,`mask_1`,`mask_4`,`ip_address_1`,`parity_check`,`mask_3`)
+        VALUES (#{DevCode},#{OnlineStatus},#{SendTime},#{SeqId},#{values},#{ipAddress2},#{ipAddress3},#{ipAddress4},#{pumpWorkingModeSetting},#{ethWorkingMode},#{wifiSwitch},#{address458},#{gateWay2},#{gateWay1},#{gateWay3},#{gateWay4},#{type},#{modbusPort},#{baudCode},#{mask2},#{embeddedVersion},#{mask1},#{mask4},#{ipAddress1},#{parityCheck},#{mask3})
     </insert>
 
     <insert id="set">
@@ -14,7 +16,8 @@
     </insert>
 
     <insert id="resp">
-        insert into emq_resp(`guid`,`code`,`msg`) VALUES (#{guid},#{code},#{msg})
+        insert into emq_resp(`guid`,`code`,`msg`,`ip_address_2`,`ip_address_3`,`ip_address_4`)
+        VALUES (#{guid},#{code},#{msg},#{IPAddress2},#{IPAddress3},#{IPAddress4})
     </insert>
 
     <insert id="upload">

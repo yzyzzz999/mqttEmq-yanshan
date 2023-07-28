@@ -1,5 +1,6 @@
 package com.example.emqdemo.util;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.emqdemo.domain.MqttConfiguration;
 import com.example.emqdemo.domain.Topic;
@@ -12,6 +13,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -76,6 +78,10 @@ public class PushCallback implements MqttCallback {
         Map<String,Object> mapJson = json.getInnerMap();
         for (String key: mapJson.keySet()){
             mapJson.replace(key,String.valueOf(mapJson.get(key)));
+            String str = String.valueOf(mapJson.get(key));
+            if (str.equals("null")) {
+                mapJson.replace(key, null);
+            }
             if ("SendTime".equals(key)){
                 Date date = new Date(Long.parseLong((String) mapJson.get(key)));
                 mapJson.replace(key,date);
@@ -84,6 +90,27 @@ public class PushCallback implements MqttCallback {
                 mapJson.replace(key,date);
             }
         }
+
+        //拆分
+        JSONObject getJson = JSONObject.parseObject((String)mapJson.get("values"));
+        Map<String,Object> newmap = getJson.getInnerMap();
+        System.out.println(newmap.keySet());
+        String msg = String.valueOf(json.get("values"));
+        Map<String,Object> returnMap = new HashMap<String,Object>();
+        returnMap = JSON.parseObject(msg, HashMap.class);
+        for(String key : newmap.keySet()){
+            String str = String.valueOf(returnMap.get(key));
+            if (str.equals("null")) {
+                newmap.replace(key, null);
+            }else{
+                newmap.replace(key, String.valueOf(returnMap.get(key)));
+            }
+        }
+        mapJson.putAll(newmap);
+        if (new splitMessage().compare(mapJson,topic)){
+            log.error("字段为空");
+        }
+
         //实例化入库方法
         EmqServiceImpl emqService=SpringUtil.getBean(EmqServiceImpl.class);
         //调用入库方法

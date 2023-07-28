@@ -65,7 +65,7 @@ public class MqttController {
      * @return
      */
     @RequestMapping("/getsubscribetopic")
-    public Object getsubscribetopic( @RequestBody Map<String,String> typelist  , HttpSession session ){
+    public Object getsubscribetopic( @RequestBody Map<String,String> typelist, HttpSession session ){
         int Qos=1;
         String key = "";
         if(typelist!=null && typelist.size() > 0){
@@ -87,7 +87,7 @@ public class MqttController {
      * @return
      */
     @RequestMapping("/getcallsubscribe")
-    public Object getcallsubscribe( @RequestBody Map<String,String> typelist  , HttpSession session ){
+    public Object getcallsubscribe( @RequestBody Map<String,String> typelist, HttpSession session ){
         String key = "";
         if(typelist!=null && typelist.size() > 0){
             key = typelist.get("topic");
@@ -123,8 +123,6 @@ public class MqttController {
         }
         return true;
     }
-
-
 
 
 }
