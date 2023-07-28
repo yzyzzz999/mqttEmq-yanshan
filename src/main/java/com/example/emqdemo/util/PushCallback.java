@@ -73,8 +73,24 @@ public class PushCallback implements MqttCallback {
         log.info("============》》接收消息内容 : " + payload);
         log.info("============》》接收ID : " + message.getId());
         log.info("接收数据结束 下面可以执行数据处理操作");
+
         //将json转map,方便读取数据
-        JSONObject json  =  JSONObject.parseObject(payload);
+        Map<String,Object> mapJson = messageResolve(JSONObject.parseObject(payload),topic);
+
+        //数据入库
+        if (saveMessage(mapJson,topic)){
+            log.error("======》》未识别的topic - {}",payload);
+        }
+    }
+
+    /**
+     * mqtt数据-解析
+     * @param json mqtt数据
+     * @param topic mqtt主题
+     * @return mapJson
+     */
+    public Map<String,Object> messageResolve(JSONObject json,String topic){
+
         Map<String,Object> mapJson = json.getInnerMap();
         for (String key: mapJson.keySet()){
             mapJson.replace(key,String.valueOf(mapJson.get(key)));
@@ -110,6 +126,10 @@ public class PushCallback implements MqttCallback {
         if (new splitMessage().compare(mapJson,topic)){
             log.error("字段为空");
         }
+        return mapJson;
+    }
+
+    public boolean saveMessage(Map<String,Object> mapJson, String topic){
 
         //实例化入库方法
         EmqServiceImpl emqService=SpringUtil.getBean(EmqServiceImpl.class);
@@ -127,8 +147,9 @@ public class PushCallback implements MqttCallback {
         }else if(Topic.CONTROL_RESP.equals(topic)){
             emqService.resp(mapJson);
         }else{
-            log.error("======》》未识别的topic - {}",payload);
+            return false;
         }
         log.info("消息处理结束");
+        return true;
     }
 }
