@@ -1,9 +1,9 @@
 package com.example.emqdemo.util;
 
 
-import com.example.emqdemo.domain.emqInterval;
-import com.example.emqdemo.domain.emqOnchange;
-import com.example.emqdemo.domain.emqResp;
+import com.example.emqdemo.domain.EmqInterval;
+import com.example.emqdemo.domain.EmqOnchange;
+import com.example.emqdemo.domain.EmqResp;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
@@ -15,22 +15,22 @@ import java.util.Set;
 @Slf4j
 public class splitMessage {
 
-    emqResp emqresp = new emqResp();
-    emqInterval emqinterval = new emqInterval();
+    EmqResp Emqresp = new EmqResp();
+    EmqInterval Emqinterval = new EmqInterval();
 
-    emqOnchange emqOnchange = new emqOnchange();
+    EmqOnchange EmqOnchange = new EmqOnchange();
 
     public boolean compare(Map<String, Object> mapJson, String topic) {
         Field[] fields = new Field[0];
         switch (topic) {
             case "/control/resp":
-                fields = emqresp.getClass().getDeclaredFields();
+                fields = Emqresp.getClass().getDeclaredFields();
                 break;
             case "/control/onChange":
-                fields = emqOnchange.getClass().getDeclaredFields();
+                fields = EmqOnchange.getClass().getDeclaredFields();
                 break;
             case "/values/interval":
-                fields = emqinterval.getClass().getDeclaredFields();
+                fields = Emqinterval.getClass().getDeclaredFields();
                 break;
             default:
         }
