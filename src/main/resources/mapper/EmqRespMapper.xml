@@ -3,7 +3,7 @@
 <mapper namespace="com.example.emqdemo.mapper.EmqRespMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.example.emqdemo.domain.EmqRespMapper">
+    <resultMap id="BaseResultMap" type="com.example.emqdemo.domain.EmqResp">
         <id column="id" property="id" />
         <result column="guid" property="guid" />
         <result column="code" property="code" />

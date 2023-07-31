@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import lombok.Data;
+import java.util.Date;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>
@@ -34,7 +36,7 @@ public class EmqInterval implements Serializable {
     private Boolean onlineStatus;
 
     @TableField("send_time")
-    private LocalDateTime sendTime;
+    private Date sendTime;
 
     /**
      * 设备id
@@ -42,7 +44,7 @@ public class EmqInterval implements Serializable {
     @TableField("seq_id")
     private Long seqId;
 
-    @TableField("values")
+    @TableField("value")
     private String values;
 
     /**
@@ -73,7 +75,7 @@ public class EmqInterval implements Serializable {
      * 485波特率代码
      */
     @TableField("baud_code")
-    private BigDecimal baudCode;
+    private Integer baudCode;
 
     /**
      * 485奇偶校验
@@ -127,7 +129,7 @@ public class EmqInterval implements Serializable {
      * IP地址/WAN口掩码-4
      */
     @TableField("mask_4")
-    private String mask4;
+    private Integer mask4;
 
     /**
      * IP地址/WAN口网关-1
@@ -151,7 +153,7 @@ public class EmqInterval implements Serializable {
      * IP地址/WAN口网关-4
      */
     @TableField("gateway_4")
-    private String gateway4;
+    private Integer gateway4;
 
     /**
      * MODBUS TCP端口号
@@ -213,5 +215,41 @@ public class EmqInterval implements Serializable {
     @TableField("pump_speed_setting")
     private Boolean pumpSpeedSetting;
 
-
+    public static EmqInterval init(Map<String, Object> mapJson){
+        EmqInterval emqInterval= new EmqInterval();
+        emqInterval.setSendTime((Date) mapJson.get("SendTime"));
+        emqInterval.setDevCode(String.valueOf(String.valueOf(mapJson.get("DevCode"))));
+        emqInterval.setOnlineStatus("1".equalsIgnoreCase(String.valueOf(mapJson.get("OnlineStatus"))));
+        emqInterval.setSeqId( Long.valueOf((String) mapJson.get("SeqId")));
+        emqInterval.setValues( String.valueOf(mapJson.get("values")));
+        emqInterval.setCommunicationStatus("1".equalsIgnoreCase(String.valueOf(mapJson.get("Communication Status"))));
+        emqInterval.setWifiSwitch("1".equalsIgnoreCase(String.valueOf(mapJson.get("WIFI switch"))));
+        emqInterval.setPumpSpeedFeedback("1".equalsIgnoreCase(String.valueOf(mapJson.get("Pump speed feedback"))));
+        emqInterval.setPumpSpeedSetting("1".equalsIgnoreCase(String.valueOf(mapJson.get("Pump speed setting"))));
+        emqInterval.setPumpWorkingModeSetting(mapJson.get("Pump working mode setting") != null? (Integer.parseInt((String) mapJson.get("Pump working mode setting"))):-1);
+        emqInterval.setO2Concentration(new BigDecimal((String) Optional.ofNullable(mapJson.get("O2 concentration")).orElse("-1"))) ;
+        emqInterval.setH2sConcentration(new BigDecimal((String) Optional.ofNullable(mapJson.get("H2S concentration")).orElse("-1")));
+        emqInterval.setCh4Concentration(new BigDecimal((String) Optional.ofNullable(mapJson.get("CH4 concentration")).orElse("-1")));
+        emqInterval.setCoConcentration(new BigDecimal((String) Optional.ofNullable(mapJson.get("CO concentration")).orElse("-1")));
+        emqInterval.setMask1(mapJson.get("mask-1") != null? (Integer.parseInt(String.valueOf(mapJson.get("mask-1")))):-1);
+        emqInterval.setMask2(mapJson.get("mask-2") != null? (Integer.parseInt(String.valueOf(mapJson.get("mask-2")))):-1);
+        emqInterval.setMask3(mapJson.get("mask-3") != null? (Integer.parseInt(String.valueOf(mapJson.get("mask-3")))):-1);
+        emqInterval.setMask4(mapJson.get("mask-4") != null? (Integer.parseInt(String.valueOf(mapJson.get("mask-4")))):-1);
+        emqInterval.setIpAddress1(mapJson.get("IP Address-1") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-1")))):-1);
+        emqInterval.setIpAddress2(mapJson.get("IP Address-2") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-2")))):-1);
+        emqInterval.setIpAddress3(mapJson.get("IP Address-3") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-3")))):-1);
+        emqInterval.setIpAddress4(mapJson.get("IP Address-4") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-4")))):-1);
+        emqInterval.setEthWorkingMode("1".equalsIgnoreCase(String.valueOf(mapJson.get("ETH working mode"))));
+        emqInterval.setAddress485("1".equalsIgnoreCase(String.valueOf(mapJson.get("485 address"))));
+        emqInterval.setGateway1(mapJson.get("gateway-1") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-1")))):-1);
+        emqInterval.setGateway2(mapJson.get("gateway-2") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-2")))):-1);
+        emqInterval.setGateway3(mapJson.get("gateway-3") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-3")))):-1);
+        emqInterval.setGateway4(mapJson.get("gateway-4") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-4")))):-1);
+        emqInterval.setModbusPort(mapJson.get("MODBUS port") != null? (Integer.parseInt(String.valueOf(mapJson.get("MODBUS port")))):-1);
+        emqInterval.setBaudCode(mapJson.get("Baud code") != null? (Integer.parseInt(String.valueOf(mapJson.get("Baud code")))):-1);
+        emqInterval.setType(mapJson.get("Type") != null? (Integer.parseInt(String.valueOf(mapJson.get("Type")))):-1);
+        emqInterval.setEmbeddedVersion(mapJson.get("Embedded version") != null? (Integer.parseInt(String.valueOf(mapJson.get("Embedded version")))):-1);
+        emqInterval.setParityCheck("1".equalsIgnoreCase(String.valueOf(mapJson.get("Parity check"))));
+        return emqInterval;
+    }
 }
