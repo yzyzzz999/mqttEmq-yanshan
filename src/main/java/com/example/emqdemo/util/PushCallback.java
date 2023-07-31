@@ -2,8 +2,12 @@ package com.example.emqdemo.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.example.emqdemo.domain.EmqInterval;
+import com.example.emqdemo.domain.EmqOnchange;
 import com.example.emqdemo.domain.MqttConfiguration;
 import com.example.emqdemo.domain.Topic;
+import com.example.emqdemo.mapper.EmqIntervalMapper;
+import com.example.emqdemo.mapper.EmqOnchangeMapper;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
 import com.example.emqdemo.util.mqttUtil.MqttPushClient;
 import lombok.extern.slf4j.Slf4j;
@@ -77,14 +81,35 @@ public class PushCallback implements MqttCallback {
         //将json转map,方便读取数据
         Map<String,Object> mapJson = messageResolve(JSONObject.parseObject(payload),topic);
 
-        //数据入库
-        if (saveMessage(mapJson,topic)){
-            log.error("======》》未识别的topic - {}",payload);
+        if (!"4".equals(mapJson.get("SeqId").toString())){
+            //数据入库
+            if (saveMessage(mapJson,topic)){
+                log.error("======》》未识别的topic - {}",payload);
+            }
+        }else {
+            switch (topic){
+                case Topic.VALUES_INTERVAL:
+                    EmqInterval emqInterval = EmqInterval.init(mapJson);
+                    EmqIntervalMapper intervalMapper = SpringUtil.getBean(EmqIntervalMapper.class);
+                    intervalMapper.insert(emqInterval);
+                    break;
+                case Topic.VALUES_ONCHANGE:
+                    EmqOnchange emqOnchange = EmqOnchange.init(mapJson);
+                    EmqOnchangeMapper onchangeMapper = SpringUtil.getBean(EmqOnchangeMapper.class);
+                    onchangeMapper.insert(emqOnchange);
+                    break;
+                default:
+                    //非点位数据直接入库
+                    if (saveMessage(mapJson,topic)){
+                        log.error("======》》未识别的topic - {}",payload);
+                    }
+                    break;
+            }
         }
     }
 
     /**
-     * mqtt数据-解析
+     * mqtt数据-转map
      * @param json mqtt数据
      * @param topic mqtt主题
      * @return mapJson

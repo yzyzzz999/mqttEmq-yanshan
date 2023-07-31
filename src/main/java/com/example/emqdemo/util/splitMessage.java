@@ -16,7 +16,9 @@ import java.util.Set;
 public class splitMessage {
 
     EmqResp Emqresp = new EmqResp();
+
     EmqInterval Emqinterval = new EmqInterval();
+
 
     EmqOnchange EmqOnchange = new EmqOnchange();
 
@@ -39,10 +41,9 @@ public class splitMessage {
         boolean flag = true;
         StringBuffer str = new StringBuffer();
         for (Field field : fields) {
-            if (!keySet.stream().anyMatch(ket -> ket.equals(field.getName()))) {
+            if (keySet.stream().noneMatch(ket -> ket.equals(field.getName()))) {
                 flag = false;
                 str.append(field.getName()+",");
-//                log.info(field.getName() + "丢失");
             }
         }
         if(str.length() > 0){
