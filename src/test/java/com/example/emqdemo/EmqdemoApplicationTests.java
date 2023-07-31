@@ -10,6 +10,7 @@ import com.example.emqdemo.service.impl.EmqServiceImpl;
 import com.example.emqdemo.util.SpringUtil;
 import com.example.emqdemo.util.splitMessage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Mapper;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +63,12 @@ class EmqdemoApplicationTests {
 
     @Test
     void test1() {
-        String Payload = "{\"guid\":\"131\",\"code\":\"abc\",\"msg\":\"{\\\"IP Address-1\\\":1}\"}";
+        String Payload = "{\"guid\":\"131\",\"code\":\"abc\",\"msg\":\"{\\\"ipAddress2\\\":1}\"}";
         String topic = "/control/resp";
         JSONObject json = JSONObject.parseObject(Payload);
+        System.out.println("json="+json);
         Map<String,Object> map = json.getInnerMap();
+        System.out.println("map="+map);
 
         JSONObject mapJson = JSONObject.parseObject((String)map.get("msg"));
         Map<String,Object> newmap = mapJson.getInnerMap();

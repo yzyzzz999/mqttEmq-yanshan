@@ -110,7 +110,6 @@ public class PushCallback implements MqttCallback {
         //拆分
         JSONObject getJson = JSONObject.parseObject((String)mapJson.get("values"));
         Map<String,Object> newmap = getJson.getInnerMap();
-        System.out.println(newmap.keySet());
         String msg = String.valueOf(json.get("values"));
         Map<String,Object> returnMap= JSON.parseObject(msg, HashMap.class);
         for(String key : newmap.keySet()){
@@ -122,7 +121,7 @@ public class PushCallback implements MqttCallback {
             }
         }
         mapJson.putAll(newmap);
-        if (new splitMessage().compare(mapJson,topic)){
+        if ((new splitMessage().compare(mapJson,topic))){
             log.error("字段为空");
         }
         return mapJson;
