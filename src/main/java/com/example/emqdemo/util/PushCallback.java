@@ -83,8 +83,8 @@ public class PushCallback implements MqttCallback {
 
         if (!"4".equals(mapJson.get("SeqId").toString())){
             //数据入库
-            if (saveMessage(mapJson,topic)){
-                log.error("======》》未识别的topic - {}",payload);
+            if (!saveMessage(mapJson,topic)){
+                log.error("======》》接收ID : " + message.getId() + "==》》未识别的topic - {}",payload);
             }
         }else {
             switch (topic){
@@ -99,11 +99,6 @@ public class PushCallback implements MqttCallback {
                     onchangeMapper.insert(emqOnchange);
                     break;
                 default:
-                    //非点位数据直接入库
-                    if (saveMessage(mapJson,topic)){
-                        log.error("======》》未识别的topic - {}",payload);
-                    }
-                    break;
             }
         }
     }
