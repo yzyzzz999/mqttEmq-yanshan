@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.emqdemo.mapper.EmqRespMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.emqdemo.domain.EmqResp">
+        <id column="id" property="id" />
+        <result column="guid" property="guid" />
+        <result column="code" property="code" />
+        <result column="msg" property="msg" />
+        <result column="ip_address_2" property="ipAddress2" />
+        <result column="ip_address_3" property="ipAddress3" />
+        <result column="ip_address_4" property="ipAddress4" />
+    </resultMap>
+
+</mapper>

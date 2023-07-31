@@ -38,7 +38,7 @@ class EmqdemoApplicationTests {
 
     @Test
     void test() {
-        String Payload = "{\"AlarmDesc\":\"这是一条测试\",\"AlarmDevice\":\"这是一条测试\",\"AlarmGenValue\":0,\"AlarmGuid\":\"baeb1bf-643-489-5a-78fefeded4ha\",\"AlarmIndex\":null,\"AlarmLevel\":2,\"AlarmPoint\":\"Pump speed fehack\",\"AlarmStart\":168975600900,\"AlarmStatus\":1}";
+        String Payload = "{\"DevCode\":\"Four in one sensor\",\"OnlineStatus\":1,\"SendTime\":1690726906447,\"SeqId\":4,\"values\":{\"485 address\":1,\"Baud code\":3,\"CH4 concentration\":0,\"CO concentration\":0,\"Communication Status\":1,\"ETH working mode\":1,\"Embedded version\":258,\"H2S concentration\":0,\"IP Address-1\":192,\"IP Address-2\":168,\"IP Address-3\":1,\"IP Address-4\":101,\"MODBUS port\":502,\"Parity check\":0,\"Pump speed feedback\":0,\"Pump working mode setting\":0,\"Type\":1537,\"WIFI switch\":1,\"gateway-1\":192,\"gateway-2\":168,\"gateway-3\":1,\"gateway-4\":1,\"mask-1\":255,\"mask-2\":255,\"mask-3\":255,\"mask-4\":0}}";
         JSONObject json = JSONObject.parseObject(Payload);
         Map<String, Object> mapJson = json.getInnerMap();
         System.out.println(mapJson.keySet());

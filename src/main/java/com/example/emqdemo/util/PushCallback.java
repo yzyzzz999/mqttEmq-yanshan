@@ -95,7 +95,7 @@ public class PushCallback implements MqttCallback {
         for (String key: mapJson.keySet()){
             mapJson.replace(key,String.valueOf(mapJson.get(key)));
             String str = String.valueOf(mapJson.get(key));
-            if (str.equals("null")) {
+            if ("null".equals(str)) {
                 mapJson.replace(key, null);
             }
             if ("SendTime".equals(key)){
@@ -112,11 +112,10 @@ public class PushCallback implements MqttCallback {
         Map<String,Object> newmap = getJson.getInnerMap();
         System.out.println(newmap.keySet());
         String msg = String.valueOf(json.get("values"));
-        Map<String,Object> returnMap = new HashMap<String,Object>();
-        returnMap = JSON.parseObject(msg, HashMap.class);
+        Map<String,Object> returnMap= JSON.parseObject(msg, HashMap.class);
         for(String key : newmap.keySet()){
             String str = String.valueOf(returnMap.get(key));
-            if (str.equals("null")) {
+            if ("null".equals(str)) {
                 newmap.replace(key, null);
             }else{
                 newmap.replace(key, String.valueOf(returnMap.get(key)));

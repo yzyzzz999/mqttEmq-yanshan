@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.emqdemo.mapper.EmqIntervalMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.emqdemo.domain.EmqInterval">
+        <id column="id" property="id" />
+        <result column="dev_code" property="devCode" />
+        <result column="online_status" property="onlineStatus" />
+        <result column="send_time" property="sendTime" />
+        <result column="seq_id" property="seqId" />
+        <result column="values" property="values" />
+        <result column="communication_status" property="communicationStatus" />
+        <result column="wifi_switch" property="wifiSwitch" />
+        <result column="pump_speed_feedback" property="pumpSpeedFeedback" />
+        <result column="pump_speed_setting" property="pumpSpeedSetting" />
+        <result column="pump_working_mode_setting" property="pumpWorkingModeSetting" />
+        <result column="o2_concentration" property="o2Concentration" />
+        <result column="h2s_concentration" property="h2sConcentration" />
+        <result column="ch4_concentration" property="ch4Concentration" />
+        <result column="co_concentration" property="coConcentration" />
+        <result column="mask_1" property="mask1" />
+        <result column="mask_2" property="mask2" />
+        <result column="mask_3" property="mask3" />
+        <result column="mask_4" property="mask4" />
+        <result column="ip_address_1" property="ipAddress1" />
+        <result column="ip_address_2" property="ipAddress2" />
+        <result column="ip_address_3" property="ipAddress3" />
+        <result column="ip_address_4" property="ipAddress4" />
+        <result column="eth_working_mode" property="ethWorkingMode" />
+        <result column="address_485" property="address485" />
+        <result column="gateway_1" property="gateway1" />
+        <result column="gateway_2" property="gateway2" />
+        <result column="gateway_3" property="gateway3" />
+        <result column="gateway_4" property="gateway4" />
+        <result column="modbus_port" property="modbusPort" />
+        <result column="baud_code" property="baudCode" />
+        <result column="type" property="type" />
+        <result column="embedded_version" property="embeddedVersion" />
+        <result column="parity_check" property="parityCheck" />
+    </resultMap>
+
+</mapper>
