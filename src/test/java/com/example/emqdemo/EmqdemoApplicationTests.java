@@ -62,7 +62,7 @@ class EmqdemoApplicationTests {
 
     @Test
     void test1() {
-        String Payload = "{\"guid\":\"131\",\"code\":\"abc\",\"msg\":\"{\\\"IPAddress3\\\":1}\"}";
+        String Payload = "{\"guid\":\"131\",\"code\":\"abc\",\"msg\":\"{\\\"IP Address-1\\\":1}\"}";
         String topic = "/control/resp";
         JSONObject json = JSONObject.parseObject(Payload);
         Map<String,Object> map = json.getInnerMap();
