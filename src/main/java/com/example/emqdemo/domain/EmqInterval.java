@@ -51,7 +51,7 @@ public class EmqInterval implements Serializable {
      * 在线点
      */
     @TableField("communication_status")
-    private Boolean communicationStatus;
+    private Integer communicationStatus;
 
     /**
      * 模块型号
@@ -69,7 +69,7 @@ public class EmqInterval implements Serializable {
      * 模块485地址
      */
     @TableField("address_485")
-    private Boolean address485;
+    private Integer address485;
 
     /**
      * 485波特率代码
@@ -81,7 +81,7 @@ public class EmqInterval implements Serializable {
      * 485奇偶校验
      */
     @TableField("parity_check")
-    private Boolean parityCheck;
+    private Integer parityCheck;
 
     /**
      * IP地址/WAN口IP-1
@@ -165,13 +165,13 @@ public class EmqInterval implements Serializable {
      * WIFI开关
      */
     @TableField("wifi_switch")
-    private Boolean wifiSwitch;
+    private Integer wifiSwitch;
 
     /**
      * ETH工作模式
      */
     @TableField("eth_working_mode")
-    private Boolean ethWorkingMode;
+    private Integer ethWorkingMode;
 
     /**
      * 一氧化碳(CO)浓度
@@ -207,13 +207,13 @@ public class EmqInterval implements Serializable {
      * 泵转速反馈
      */
     @TableField("pump_speed_feedback")
-    private Boolean pumpSpeedFeedback;
+    private Integer pumpSpeedFeedback;
 
     /**
      * 泵转速设置
      */
     @TableField("pump_speed_setting")
-    private Boolean pumpSpeedSetting;
+    private Integer pumpSpeedSetting;
 
     public static EmqInterval init(Map<String, Object> mapJson){
         EmqInterval emqInterval= new EmqInterval();
@@ -222,10 +222,10 @@ public class EmqInterval implements Serializable {
         emqInterval.setOnlineStatus("1".equalsIgnoreCase(String.valueOf(mapJson.get("OnlineStatus"))));
         emqInterval.setSeqId( Long.valueOf((String) mapJson.get("SeqId")));
         emqInterval.setValues( String.valueOf(mapJson.get("values")));
-        emqInterval.setCommunicationStatus("1".equalsIgnoreCase(String.valueOf(mapJson.get("Communication Status"))));
-        emqInterval.setWifiSwitch("1".equalsIgnoreCase(String.valueOf(mapJson.get("WIFI switch"))));
-        emqInterval.setPumpSpeedFeedback("1".equalsIgnoreCase(String.valueOf(mapJson.get("Pump speed feedback"))));
-        emqInterval.setPumpSpeedSetting("1".equalsIgnoreCase(String.valueOf(mapJson.get("Pump speed setting"))));
+        emqInterval.setCommunicationStatus(mapJson.get("Communication Status") != null? (Integer.parseInt(String.valueOf(mapJson.get("Communication Status")))):-1);
+        emqInterval.setWifiSwitch(mapJson.get("WIFI switch") != null? (Integer.parseInt(String.valueOf(mapJson.get("WIFI switch")))):-1);
+        emqInterval.setPumpSpeedFeedback(mapJson.get("Pump speed feedback") != null? (Integer.parseInt(String.valueOf(mapJson.get("Pump speed feedback")))):-1);
+        emqInterval.setPumpSpeedSetting(mapJson.get("Pump speed setting") != null? (Integer.parseInt(String.valueOf(mapJson.get("Pump speed setting")))):-1);
         emqInterval.setPumpWorkingModeSetting(mapJson.get("Pump working mode setting") != null? (Integer.parseInt((String) mapJson.get("Pump working mode setting"))):-1);
         emqInterval.setO2Concentration(new BigDecimal((String) Optional.ofNullable(mapJson.get("O2 concentration")).orElse("-1"))) ;
         emqInterval.setH2sConcentration(new BigDecimal((String) Optional.ofNullable(mapJson.get("H2S concentration")).orElse("-1")));
@@ -239,8 +239,8 @@ public class EmqInterval implements Serializable {
         emqInterval.setIpAddress2(mapJson.get("IP Address-2") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-2")))):-1);
         emqInterval.setIpAddress3(mapJson.get("IP Address-3") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-3")))):-1);
         emqInterval.setIpAddress4(mapJson.get("IP Address-4") != null? (Integer.parseInt(String.valueOf(mapJson.get("IP Address-4")))):-1);
-        emqInterval.setEthWorkingMode("1".equalsIgnoreCase(String.valueOf(mapJson.get("ETH working mode"))));
-        emqInterval.setAddress485("1".equalsIgnoreCase(String.valueOf(mapJson.get("485 address"))));
+        emqInterval.setEthWorkingMode(mapJson.get("ETH working mode") != null? (Integer.parseInt(String.valueOf(mapJson.get("ETH working mode")))):-1);
+        emqInterval.setAddress485(mapJson.get("485 address") != null? (Integer.parseInt(String.valueOf(mapJson.get("485 address")))):-1);
         emqInterval.setGateway1(mapJson.get("gateway-1") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-1")))):-1);
         emqInterval.setGateway2(mapJson.get("gateway-2") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-2")))):-1);
         emqInterval.setGateway3(mapJson.get("gateway-3") != null? (Integer.parseInt(String.valueOf(mapJson.get("gateway-3")))):-1);
@@ -249,7 +249,7 @@ public class EmqInterval implements Serializable {
         emqInterval.setBaudCode(mapJson.get("Baud code") != null? (Integer.parseInt(String.valueOf(mapJson.get("Baud code")))):-1);
         emqInterval.setType(mapJson.get("Type") != null? (Integer.parseInt(String.valueOf(mapJson.get("Type")))):-1);
         emqInterval.setEmbeddedVersion(mapJson.get("Embedded version") != null? (Integer.parseInt(String.valueOf(mapJson.get("Embedded version")))):-1);
-        emqInterval.setParityCheck("1".equalsIgnoreCase(String.valueOf(mapJson.get("Parity check"))));
+        emqInterval.setParityCheck(mapJson.get("Parity check") != null? (Integer.parseInt(String.valueOf(mapJson.get("Parity check")))):-1);
         return emqInterval;
     }
 }
