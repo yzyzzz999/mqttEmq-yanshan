@@ -5,6 +5,7 @@ import com.example.emqdemo.domain.EmqInterval;
 import com.example.emqdemo.domain.EmqOnchange;
 import com.example.emqdemo.domain.EmqResp;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -49,7 +50,9 @@ public class splitMessage {
         if(str.length() > 0){
             str.deleteCharAt(str.length() - 1);
         }
-        log.info(str+"丢失");
+        if (StringUtils.isEmpty(str)){
+            log.info(str + "点位未发送!");
+        }
         return flag;
     }
 
