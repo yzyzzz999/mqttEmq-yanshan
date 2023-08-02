@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.emqdemo.domain.EmqInterval;
 import com.example.emqdemo.mapper.EmqIntervalMapper;
 import com.example.emqdemo.service.EmqIntervalService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,5 +17,4 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class EmqIntervalServiceImpl extends ServiceImpl<EmqIntervalMapper, EmqInterval> implements EmqIntervalService {
-
 }

@@ -14,6 +14,9 @@ spring:
     url: jdbc:mysql://117.50.158.67:3306/sp-monitor?characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: etmonitor@7qTzSW#R
+  neo4j:
+    pool:
+      idle-time-before-connection-test:
 mybatis:
   config-location: classpath:static/mybatis/mybatis-config.xml
   mapper-locations: classpath:mapper/*.xml
@@ -25,3 +28,40 @@ mybatis-plus:
 logging:
   level:
     com.example.emqdemo.mapper: debug # 要改成要打印的sql语句所在的mapper文件所在包路径
+
+custom:
+  map:
+    value: { communicationStatus: "Communication Status",
+             type: "Type",
+             embeddedVersion: "Embedded version",
+             address485: "485 address",
+             baudCode: "Baud code",
+             parityCheck: "Parity check",
+             ipAddress1: "IP Address-1",
+             ipAddress2: "IP Address-2",
+             ipAddress3: "IP Address-3",
+             ipAddress4: "IP Address-4",
+             mask1: "mask-1",
+             mask2: "mask-2",
+             mask3: "mask-3",
+             mask4: "mask-4",
+             gateway1: "gateway-1",
+             gateway2: "gateway-2",
+             gateway3: "gateway-3",
+             gateway4: "gateway-4",
+             modbusPort: "MODBUS port",
+             wifiSwitch: "WIFI switch",
+             ethWorkingMode: "ETH working mode",
+             coConcentration: "CO concentration",
+             h2sConcentration: "H2S concentration",
+             o2Concentration: "O2 concentration",
+             ch4Concentration: "CH4 concentration",
+             pumpWorkingModeSetting: "Pump working mode setting",
+             pumpSpeedFeedback: "Pump speed feedback",
+             pumpSpeedSetting: "Pump speed setting"}
+
+
+
+
+
+

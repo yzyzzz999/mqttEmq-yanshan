@@ -2,10 +2,7 @@ package com.example.emqdemo.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.example.emqdemo.domain.EmqInterval;
-import com.example.emqdemo.domain.EmqOnchange;
-import com.example.emqdemo.domain.MqttConfiguration;
-import com.example.emqdemo.domain.Topic;
+import com.example.emqdemo.domain.*;
 import com.example.emqdemo.mapper.EmqIntervalMapper;
 import com.example.emqdemo.mapper.EmqOnchangeMapper;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
@@ -130,7 +127,7 @@ public class PushCallback implements MqttCallback {
         //拆分
         JSONObject getJson = JSONObject.parseObject((String)mapJson.get("values"));
         Map<String,Object> newmap = getJson.getInnerMap();
-        System.out.println(newmap.keySet());
+        System.out.println("newmap:"+newmap.keySet());
         String msg = String.valueOf(json.get("values"));
         Map<String,Object> returnMap= JSON.parseObject(msg, HashMap.class);
         for(String key : newmap.keySet()){
@@ -142,8 +139,8 @@ public class PushCallback implements MqttCallback {
             }
         }
         mapJson.putAll(newmap);
-        if (new splitMessage().compare(mapJson,topic)){
-            log.error("字段为空");
+        if (new splitMessage(new YmlAnalysis()).compare(mapJson,topic)){
+//            log.error("字段为空");
         }
         return mapJson;
     }

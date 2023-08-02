@@ -2,27 +2,22 @@ package com.example.emqdemo;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.example.emqdemo.domain.EmqInterval;
 import com.example.emqdemo.domain.EmqOnchange;
+import com.example.emqdemo.domain.YmlAnalysis;
 import com.example.emqdemo.domain.Topic;
 import com.example.emqdemo.mapper.EmqIntervalMapper;
 import com.example.emqdemo.mapper.EmqMapper;
 import com.example.emqdemo.mapper.EmqOnchangeMapper;
-import com.example.emqdemo.service.EmqService;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
 import com.example.emqdemo.util.SpringUtil;
 import com.example.emqdemo.util.splitMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Mapper;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.ResultSet;
 import java.util.*;
-import java.util.stream.Stream;
 
 @Slf4j
 @SpringBootTest
@@ -43,12 +38,11 @@ class EmqdemoApplicationTests {
 
     @Test
     void test() {
-//        String payload = "{\"DevCode\":\"测试\",\"OnlineStatus\":1,\"SendTime\":1690726906447,\"SeqId\":4,\"values\":{\"485 address\":1,\"Baud code\":3,\"CH4 concentration\":0,\"CO concentration\":0,\"Communication Status\":1,\"ETH working mode\":1,\"Embedded version\":258,\"H2S concentration\":0,\"IP Address-1\":192,\"IP Address-2\":168,\"IP Address-3\":1,\"IP Address-4\":101,\"MODBUS port\":502,\"Parity check\":0,\"Pump speed feedback\":0,\"Pump working mode setting\":0,\"Type\":1537,\"WIFI switch\":1,\"gateway-1\":192,\"gateway-2\":168,\"gateway-3\":1,\"gateway-4\":1,\"mask-1\":255,\"mask-2\":255,\"mask-3\":255,\"mask-4\":0}}";
+//        String payload = "{\"DevCode\":\"测试1\",\"OnlineStatus\":1,\"SendTime\":1690726906447,\"SeqId\":4," + "\"values\":{\"485 address\":1,\"Baud code\":3,\"CH4 concentration\":0,\"CO concentration\":0,\"Communication Status\":1,\"ETH working mode\":1,\"Embedded version\":258,\"H2S concentration\":0,\"IP Address-1\":192,\"IP Address-2\":168,\"IP Address-3\":1,\"IP Address-4\":101,\"MODBUS port\":502,\"Parity check\":0,\"Pump speed feedback\":0,\"Pump working mode setting\":0,\"Type\":1537,\"WIFI switch\":1,\"gateway-1\":192,\"gateway-2\":168,\"gateway-3\":1,\"gateway-4\":1,\"mask-1\":255,\"mask-2\":255,\"mask-3\":255,\"mask-4\":0,\"O2 concentration\":20.89,\"Pump speed setting\":1}}";
         String payload = "{\"DevCode\":\"测试1\",\"OnlineStatus\":1,\"SendTime\":1690726909446,\"SeqId\":4,\"values\":{\"O2 concentration\":19.9}}";
         String topic = "/values/onchange";
         //将json转map,方便读取数据
         Map<String,Object> mapJson = messageResolve(JSONObject.parseObject(payload),topic);
-
         if (!"4".equals(mapJson.get("SeqId").toString())){
             //数据入库
             if (saveMessage(mapJson,topic)){
@@ -126,8 +120,6 @@ class EmqdemoApplicationTests {
         emqService.upload(mapJson);
     }
 
-
-
     /**
      * mqtt数据-转map
      * @param json mqtt数据
@@ -155,7 +147,7 @@ class EmqdemoApplicationTests {
         //拆分
         JSONObject getJson = JSONObject.parseObject((String)mapJson.get("values"));
         Map<String,Object> newmap = getJson.getInnerMap();
-        System.out.println(newmap.keySet());
+        System.out.println("newmap"+newmap.keySet());
         String msg = String.valueOf(json.get("values"));
         Map<String,Object> returnMap= JSON.parseObject(msg, HashMap.class);
         for(String key : newmap.keySet()){
@@ -167,7 +159,7 @@ class EmqdemoApplicationTests {
             }
         }
         mapJson.putAll(newmap);
-        if (new splitMessage().compare(mapJson,topic)){
+        if (new splitMessage(ymlAnalysis).compare(mapJson,topic)){
             log.error("字段为空");
         }
         return mapJson;
@@ -196,6 +188,17 @@ class EmqdemoApplicationTests {
         log.info("消息处理结束");
         return true;
     }
+
+    @Autowired
+    private YmlAnalysis ymlAnalysis;
+//    @Test
+//    void test3(){
+//        Map<String,Object> map = ymlAnalysis.getValue();
+//        for(String key:map.keySet()){
+//            System.out.println(map.get(key));
+//        }
+//
+//    }
 
 
 }
