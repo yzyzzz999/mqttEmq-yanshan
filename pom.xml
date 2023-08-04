@@ -96,10 +96,24 @@
             <artifactId>gson</artifactId>
             <version>2.9.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
 
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.16</version>
+        </dependency>
 
-
+<!--        <dependency>-->
+<!--            <groupId>cglib</groupId>-->
+<!--            <artifactId>cglib</artifactId>-->
+<!--            <version>3.3.0</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
 
 
     </dependencies>

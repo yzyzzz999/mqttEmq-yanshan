@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
 @SpringBootApplication
-@MapperScan("com.example.emqdemo")
+@MapperScan("com.example.emqdemo.mapper")
 public class EmqdemoApplication implements ApplicationRunner {
     //读取mqtt配置
     @Autowired

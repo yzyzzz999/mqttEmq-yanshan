@@ -3,6 +3,7 @@ package com.example.emqdemo.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.emqdemo.domain.*;
+import com.example.emqdemo.mapper.EmqCurrentMapper;
 import com.example.emqdemo.mapper.EmqIntervalMapper;
 import com.example.emqdemo.mapper.EmqOnchangeMapper;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
@@ -11,10 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -144,6 +147,9 @@ public class PushCallback implements MqttCallback {
         }
         return mapJson;
     }
+
+
+
 
     public boolean saveMessage(Map<String,Object> mapJson, String topic){
 

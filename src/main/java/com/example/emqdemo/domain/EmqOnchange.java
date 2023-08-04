@@ -45,7 +45,7 @@ public class EmqOnchange implements Serializable {
     private Long seqId;
 
     @TableField("value")
-    private String values;
+    private String value;
 
     /**
      * 在线点
@@ -222,7 +222,7 @@ public class EmqOnchange implements Serializable {
         emqOnchange.setDevCode(String.valueOf(String.valueOf(mapJson.get("DevCode"))));
         emqOnchange.setOnlineStatus("1".equalsIgnoreCase(String.valueOf(mapJson.get("OnlineStatus"))));
         emqOnchange.setSeqId( Long.valueOf((String) mapJson.get("SeqId")));
-        emqOnchange.setValues( String.valueOf(mapJson.get("values")));
+        emqOnchange.setValue( String.valueOf(mapJson.get("values")));
         emqOnchange.setCommunicationStatus(mapJson.get("Communication Status") != null? (Integer.parseInt(String.valueOf(mapJson.get("Communication Status")))):-1);
         emqOnchange.setWifiSwitch(mapJson.get("WIFI switch") != null? (Integer.parseInt(String.valueOf(mapJson.get("WIFI switch")))):-1);
         emqOnchange.setPumpSpeedFeedback(mapJson.get("Pump speed feedback") != null? (Integer.parseInt(String.valueOf(mapJson.get("Pump speed feedback")))):-1);

@@ -22,7 +22,6 @@ public class splitMessage {
 //    EmqResp Emqresp = new EmqResp();
 //    EmqInterval Emqinterval = new EmqInterval();
 //    EmqOnchange EmqOnchange = new EmqOnchange();
-
     private YmlAnalysis ymlAnalysis;
 
     public splitMessage(YmlAnalysis ymlAnalysis){
