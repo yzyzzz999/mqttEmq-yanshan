@@ -1,16 +1,11 @@
 package com.example.emqdemo.util;
 
 
-import com.example.emqdemo.domain.EmqInterval;
-import com.example.emqdemo.domain.EmqOnchange;
-import com.example.emqdemo.domain.EmqResp;
 import com.example.emqdemo.domain.YmlAnalysis;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,7 +13,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class splitMessage {
+public class SplitMessage {
 //    EmqResp Emqresp = new EmqResp();
 //    EmqInterval Emqinterval = new EmqInterval();
 //    EmqOnchange EmqOnchange = new EmqOnchange();
@@ -58,7 +53,7 @@ public class splitMessage {
             str.deleteCharAt(str.length() - 1);
         }
         if (!StringUtils.isEmpty(str)){
-            log.info(str + "点位未发送!");
+            log.info("点位：" + str + " 未发送!");
         }
         return flag;
     }

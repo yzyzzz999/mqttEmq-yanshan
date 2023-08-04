@@ -3,7 +3,6 @@ package com.example.emqdemo;
 
 
 
-import cn.hutool.extra.cglib.CglibUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,23 +12,19 @@ import com.example.emqdemo.mapper.EmqIntervalMapper;
 import com.example.emqdemo.mapper.EmqMapper;
 import com.example.emqdemo.mapper.EmqOnchangeMapper;
 import com.example.emqdemo.service.EmqIntervalService;
-import com.example.emqdemo.service.impl.EmqCurrentServiceImpl;
-import com.example.emqdemo.service.impl.EmqIntervalServiceImpl;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
 import com.example.emqdemo.util.BeanCopyUtil;
+import com.example.emqdemo.util.SplitMessage;
 import com.example.emqdemo.util.SpringUtil;
-import com.example.emqdemo.util.splitMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @Slf4j
 @SpringBootTest
@@ -131,7 +126,7 @@ class EmqdemoApplicationTests {
             }
         }
         mapJson.putAll(newmap);
-//        if (new splitMessage(ymlAnalysis).compare(mapJson,topic)){
+//        if (new SplitMessage(ymlAnalysis).compare(mapJson,topic)){
 ////            log.error("字段为空");
 //        }
         EmqServiceImpl emqService = SpringUtil.getBean(EmqServiceImpl.class);
@@ -299,7 +294,7 @@ class EmqdemoApplicationTests {
             }
         }
         mapJson.putAll(newmap);
-        new splitMessage().compare(ymlAnalysis,mapJson,topic);
+        new SplitMessage().compare(ymlAnalysis,mapJson,topic);
         return mapJson;
     }
 
