@@ -21,8 +21,6 @@ public class MqttPushClient  {
     }
 
 
-
-
     /**
      * 编辑连接信息
      * @param userName

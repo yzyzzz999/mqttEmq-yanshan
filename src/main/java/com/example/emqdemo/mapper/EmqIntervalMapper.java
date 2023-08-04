@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.emqdemo.domain.EmqInterval;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.util.List;
-
 /**
  * <p>
  *  Mapper 接口
