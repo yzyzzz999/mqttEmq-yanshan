@@ -27,6 +27,9 @@ public class PushCallback implements MqttCallback {
     private MqttPushClient client;
     private MqttConfiguration mqttConfiguration;
 
+    @Autowired
+    private YmlAnalysis ymlAnalysis;
+
     public PushCallback(MqttPushClient client ,MqttConfiguration mqttConfiguration) {
         this.client = client;
         this.mqttConfiguration = mqttConfiguration;
@@ -142,9 +145,8 @@ public class PushCallback implements MqttCallback {
             }
         }
         mapJson.putAll(newmap);
-        if (new splitMessage(new YmlAnalysis()).compare(mapJson,topic)){
-//            log.error("字段为空");
-        }
+        new splitMessage().compare(ymlAnalysis,mapJson,topic);
+
         return mapJson;
     }
 

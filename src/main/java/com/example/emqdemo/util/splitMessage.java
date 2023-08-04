@@ -22,12 +22,8 @@ public class splitMessage {
 //    EmqResp Emqresp = new EmqResp();
 //    EmqInterval Emqinterval = new EmqInterval();
 //    EmqOnchange EmqOnchange = new EmqOnchange();
-    private YmlAnalysis ymlAnalysis;
 
-    public splitMessage(YmlAnalysis ymlAnalysis){
-        this.ymlAnalysis = ymlAnalysis;
-    }
-    public boolean compare(Map<String, Object> mapJson, String topic) {
+    public boolean compare(YmlAnalysis ymlAnalysis,Map<String, Object> mapJson, String topic) {
 //        Field[] fields = new Field[0];
 //        switch (topic) {
 //            case "/control/resp":
