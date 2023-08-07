@@ -117,19 +117,22 @@ public class PushCallback implements MqttCallback {
                 case Topic.VALUES_INTERVAL:
                 case Topic.VALUES_ONCHANGE:
                     //mqtt数据转t_gas_data
-                    List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());//  告警未处理！！！！
+                    List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
                     tGasDataService.batchSaveGasData(gasDataList);
+                    //mqtt数据转t_gas_data_current
+
                     break;
                 case Topic.ALARM_UPLOAD:
+                    dataUtil.saveAlarmStart(mapJson);
+                    break;
                 case Topic.ALARM_UPOVERLOAD:
-                    //mqtt数据转告警
+                    dataUtil.saveAlarmEnd(mapJson);
+                    break;
 
                 default:
 
             }
         }
-
-        //mqtt数据转t_gas_data_current
 
 
     }

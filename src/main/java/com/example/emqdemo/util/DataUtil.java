@@ -4,6 +4,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.example.emqdemo.compoent.RedisUtil;
 import com.example.emqdemo.constants.Constants;
 import com.example.emqdemo.domain.TGasData;
+import com.example.emqdemo.domain.TGasDataAlarm;
 import com.example.emqdemo.domain.TGasRawData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,14 +43,78 @@ public class DataUtil {
                 if (ObjectUtil.isNotNull(mapJson.get(key))){
                     tGasData.setGasValue(new BigDecimal((String)mapJson.get(key)));
                 }
-                tGasData.setAlarm("00");
                 tGasData.setGasType(gasType);
                 tGasData.setGasUnit((String) gasDict.get(gasType));
                 tGasData.setCreateTime(new Date());
+                tGasData.setAlarm(setAlarm((String) mapJson.get("SeqId"),gasType,tGasData.getCreateTime()));
                 gasDataList.add(tGasData);
             }
         }
 
-        return null;
+        return gasDataList;
+    }
+
+    public void saveAlarmStart(Map<String, Object> mapJson) {
+        String alarmPoint = (String) mapJson.get("AlarmPoint");
+        String device = (String) mapJson.get("AlarmDevice");
+        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        for (String gasType:gasDict.keySet()){
+            String key = gasType+ Constants.MQTT_SUFFIX;
+            Date alarmStart = new Date(Long.parseLong((String) mapJson.get("AlarmStart")));
+            Map<String,Date> alarmSet = new HashMap<>();
+            if (alarmPoint.equals(key)){
+                switch (gasType){
+                    case Constants.GAS_O2:
+                        alarmSet.put(Constants.ALARM_O2,alarmStart);
+                        redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        break;
+                    case Constants.GAS_CH4:
+                        alarmSet.put(Constants.ALARM_CH4,alarmStart);
+                        redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        break;
+                    case Constants.GAS_H2S:
+                        alarmSet.put(Constants.ALARM_H2S,alarmStart);
+                        redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        break;
+                    case Constants.GAS_CO:
+                        alarmSet.put(Constants.ALARM_CO,alarmStart);
+                        redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        break;
+                    default:
+                }
+            }
+        }
+    }
+
+    public void saveAlarmEnd(Map<String, Object> mapJson) {
+        String alarmPoint = (String) mapJson.get("AlarmPoint");
+        String device = (String) mapJson.get("AlarmDevice");
+        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        for (String gasType:gasDict.keySet()){
+            String key = gasType+ Constants.MQTT_SUFFIX;
+            if (alarmPoint.equals(key)){
+                redisUtil.deleteObject(device +" " + alarmPoint);
+                }
+        }
+    }
+
+    public String setAlarm(String device, String gasType,Date createTime){
+        String key = device +" " + gasType + Constants.MQTT_SUFFIX;
+        if (redisUtil.hasKey(key)){
+            Map<String,Date> alarmSet = redisUtil.getCacheMap(key);
+            if (createTime.compareTo(alarmSet.get(gasType)) < 0){
+                switch (gasType){
+                    case Constants.GAS_O2:
+                    case Constants.GAS_CH4:
+                    case Constants.GAS_H2S:
+                        return Constants.ALARM_HIGH;
+                    case Constants.GAS_CO:
+                        return Constants.ALARM_LOW;
+                    default:
+                        return Constants.ALARM_NORMAL;
+                }
+            }
+        }
+        return Constants.ALARM_NORMAL;
     }
 }

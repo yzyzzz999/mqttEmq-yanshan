@@ -46,4 +46,13 @@ public class Constants {
 
     //mqttMessage 后缀
     public static final String MQTT_SUFFIX = " concentration";
+
+    //告警状态 (正常)
+    public static final String ALARM_NORMAL = "00";
+
+    //告警状态 (超过低段报警值报警)
+    public static final String ALARM_LOW = "01";
+
+    //告警状态 (超过高段报警值报警)
+    public static final String ALARM_HIGH = "02";
 }
