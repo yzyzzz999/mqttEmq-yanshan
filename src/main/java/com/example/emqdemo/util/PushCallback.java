@@ -3,9 +3,7 @@ package com.example.emqdemo.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.example.emqdemo.domain.*;
-import com.example.emqdemo.mapper.EmqIntervalMapper;
-import com.example.emqdemo.mapper.EmqOnchangeMapper;
-import com.example.emqdemo.mapper.TGasRawDataMapper;
+import com.example.emqdemo.service.TGasDataCurrentService;
 import com.example.emqdemo.service.TGasDataService;
 import com.example.emqdemo.service.TGasRawDataService;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
@@ -44,6 +42,8 @@ public class PushCallback implements MqttCallback {
     @Autowired
     private TGasDataService tGasDataService;
 
+    @Autowired
+    private TGasDataCurrentService tGasDataCurrentService;
     public void init(MqttPushClient client ,MqttConfiguration mqttConfiguration) {
         this.client = client;
         this.mqttConfiguration = mqttConfiguration;
@@ -120,7 +120,8 @@ public class PushCallback implements MqttCallback {
                     List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
                     tGasDataService.batchSaveGasData(gasDataList);
                     //mqtt数据转t_gas_data_current
-
+                    List<TGasDataCurrent> tGasDataCurrentList = dataUtil.gasDataCurrentsInit(tGasRawData,mapJson);
+                    tGasDataCurrentService.batchSaveGasData(tGasDataCurrentList);
                     break;
                 case Topic.ALARM_UPLOAD:
                     dataUtil.saveAlarmStart(mapJson);

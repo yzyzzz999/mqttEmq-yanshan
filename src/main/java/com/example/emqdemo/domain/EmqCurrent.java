@@ -214,7 +214,7 @@ public class EmqCurrent implements Serializable {
         emqCurrent.setDevCode(String.valueOf(String.valueOf(mapJson.get("DevCode"))));
         emqCurrent.setOnlineStatus("1".equalsIgnoreCase(String.valueOf(mapJson.get("OnlineStatus"))));
         emqCurrent.setSeqId( Long.valueOf((String) mapJson.get("SeqId")));
-        emqCurrent.setValue( String.valueOf(mapJson.get("value")));
+        emqCurrent.setValue( String.valueOf(mapJson.get("values")));
         emqCurrent.setCommunicationStatus(mapJson.get("Communication Status") != null? (Integer.parseInt(String.valueOf(mapJson.get("Communication Status")))):-1);
         emqCurrent.setWifiSwitch(mapJson.get("WIFI switch") != null? (Integer.parseInt(String.valueOf(mapJson.get("WIFI switch")))):-1);
         emqCurrent.setPumpSpeedFeedback(mapJson.get("Pump speed feedback") != null? (Integer.parseInt(String.valueOf(mapJson.get("Pump speed feedback")))):-1);

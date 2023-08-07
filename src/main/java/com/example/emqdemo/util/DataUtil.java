@@ -5,6 +5,7 @@ import com.example.emqdemo.compoent.RedisUtil;
 import com.example.emqdemo.constants.Constants;
 import com.example.emqdemo.domain.TGasData;
 import com.example.emqdemo.domain.TGasDataAlarm;
+import com.example.emqdemo.domain.TGasDataCurrent;
 import com.example.emqdemo.domain.TGasRawData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -54,6 +55,29 @@ public class DataUtil {
         return gasDataList;
     }
 
+    public List<TGasDataCurrent> gasDataCurrentsInit(TGasRawData tGasRawData, Map<String,Object> gasMapJson){
+        List<TGasDataCurrent> tGasDataCurrentList = new ArrayList<>();
+        Map<String,Object> gasCurrentDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        for (String gasCurrentType:gasCurrentDict.keySet()){
+            String key = gasCurrentType + Constants.MQTT_SUFFIX;
+            if (gasMapJson.containsKey(key)){
+                TGasDataCurrent tGasDataCurrent = new TGasDataCurrent();
+                tGasDataCurrent.setCurrentId(IdGen.genId().toString());
+                tGasDataCurrent.setRawDataId(tGasRawData.getId());
+                tGasDataCurrent.setSerialNumber(tGasRawData.getSerialNumber());
+                tGasDataCurrent.setAlarm(setAlarm((String) gasMapJson.get("SeqId"),gasCurrentType,tGasDataCurrent.getCreateTime()));
+                if (ObjectUtil.isNotNull(gasMapJson.get(key))){
+                    tGasDataCurrent.setGasValue(new BigDecimal(String.valueOf(gasMapJson.get(key))));
+                }
+                tGasDataCurrent.setGasType(key);
+                tGasDataCurrent.setGasUnit((String) gasCurrentDict.get(key));
+                tGasDataCurrent.setCreateTime(new Date());
+                tGasDataCurrentList.add(tGasDataCurrent);
+            }
+        }
+        return tGasDataCurrentList;
+    }
+
     public void saveAlarmStart(Map<String, Object> mapJson) {
         String alarmPoint = (String) mapJson.get("AlarmPoint");
         String device = (String) mapJson.get("AlarmDevice");
@@ -94,7 +118,7 @@ public class DataUtil {
             String key = gasType+ Constants.MQTT_SUFFIX;
             if (alarmPoint.equals(key)){
                 redisUtil.deleteObject(device +" " + alarmPoint);
-                }
+            }
         }
     }
 

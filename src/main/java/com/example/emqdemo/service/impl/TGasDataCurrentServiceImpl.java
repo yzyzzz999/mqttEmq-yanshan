@@ -5,6 +5,9 @@ import com.example.emqdemo.domain.TGasDataCurrent;
 import com.example.emqdemo.mapper.TGasDataCurrentMapper;
 import com.example.emqdemo.service.TGasDataCurrentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,5 +19,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class TGasDataCurrentServiceImpl extends ServiceImpl<TGasDataCurrentMapper, TGasDataCurrent> implements TGasDataCurrentService {
-
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchSaveGasData(List<TGasDataCurrent> tGasDataList) {
+        this.saveOrUpdateBatch(tGasDataList);
+    }
 }
