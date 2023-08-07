@@ -70,7 +70,7 @@ public class DataUtil {
                     tGasDataCurrent.setGasValue(new BigDecimal(String.valueOf(gasMapJson.get(key))));
                 }
                 tGasDataCurrent.setGasType(key);
-                tGasDataCurrent.setGasUnit((String) gasCurrentDict.get(key));
+                tGasDataCurrent.setGasUnit((String) gasCurrentDict.get(gasCurrentType));
                 tGasDataCurrent.setCreateTime(new Date());
                 tGasDataCurrentList.add(tGasDataCurrent);
             }
