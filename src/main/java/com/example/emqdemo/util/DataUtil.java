@@ -42,6 +42,7 @@ public class DataUtil {
                 if (ObjectUtil.isNotNull(mapJson.get(key))){
                     tGasData.setGasValue(new BigDecimal((String)mapJson.get(key)));
                 }
+                tGasData.setAlarm("00");
                 tGasData.setGasType(gasType);
                 tGasData.setGasUnit((String) gasDict.get(gasType));
                 tGasData.setCreateTime(new Date());

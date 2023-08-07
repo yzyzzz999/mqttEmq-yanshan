@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 public class Mqttbeanbak {
     @Autowired
     private MqttConfiguration mqttConfiguration;
-    @Bean("mqttPushClient")
-    public MqttPushClient getMqttPushClient() {
-        MqttPushClient mqttPushClient = new MqttPushClient();
-        return mqttPushClient;
-    }
+//    @Bean("mqttPushClient")
+//    public MqttPushClient getMqttPushClient() {
+//        MqttPushClient mqttPushClient = new MqttPushClient();
+//        return mqttPushClient;
+//    }
 }

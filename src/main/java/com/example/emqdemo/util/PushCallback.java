@@ -103,6 +103,10 @@ public class PushCallback implements MqttCallback {
             return;
         }
 
+        //将json转TGasRawData备份
+        TGasRawData tGasRawData = dataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
+        tGasRawDataService.saveGasRawData(tGasRawData);
+
         if (!"4".equals(mapJson.get("SeqId").toString())){
             //数据入库
             if (!saveMessage(mapJson,topic)){
@@ -111,31 +115,22 @@ public class PushCallback implements MqttCallback {
         }else {
             switch (topic){
                 case Topic.VALUES_INTERVAL:
-                    EmqInterval emqInterval = EmqInterval.init(mapJson);
-                    EmqIntervalMapper intervalMapper = SpringUtil.getBean(EmqIntervalMapper.class);
-                    intervalMapper.insert(emqInterval);
-                    break;
                 case Topic.VALUES_ONCHANGE:
-                    EmqOnchange emqOnchange = EmqOnchange.init(mapJson);
-                    EmqOnchangeMapper onchangeMapper = SpringUtil.getBean(EmqOnchangeMapper.class);
-                    onchangeMapper.insert(emqOnchange);
+                    //mqtt数据转t_gas_data
+                    List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());//  告警未处理！！！！
+                    tGasDataService.batchSaveGasData(gasDataList);
                     break;
+                case Topic.ALARM_UPLOAD:
+                case Topic.ALARM_UPOVERLOAD:
+                    //mqtt数据转告警
+
                 default:
+
             }
         }
 
-        //将json转TGasRawData备份
-        TGasRawData tGasRawData = dataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
-        tGasRawDataService.saveGasRawData(tGasRawData);
-
         //mqtt数据转t_gas_data_current
 
-        //mqtt数据转t_gas_data
-        List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
-        tGasDataService.batchSaveGasData(gasDataList);
-
-
-        //mqtt数据转告警
 
     }
 
