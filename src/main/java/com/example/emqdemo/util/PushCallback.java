@@ -6,6 +6,8 @@ import com.example.emqdemo.domain.*;
 import com.example.emqdemo.mapper.EmqIntervalMapper;
 import com.example.emqdemo.mapper.EmqOnchangeMapper;
 import com.example.emqdemo.mapper.TGasRawDataMapper;
+import com.example.emqdemo.service.TGasDataService;
+import com.example.emqdemo.service.TGasRawDataService;
 import com.example.emqdemo.service.impl.EmqServiceImpl;
 import com.example.emqdemo.util.mqttUtil.MqttPushClient;
 import lombok.extern.slf4j.Slf4j;
@@ -17,8 +19,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -34,7 +36,13 @@ public class PushCallback implements MqttCallback {
     private YmlAnalysis ymlAnalysis;
 
     @Autowired
-    private TGasRawDataMapper tGasRawDataMapper;
+    private DataUtil dataUtil;
+
+    @Autowired
+    private TGasRawDataService tGasRawDataService;
+
+    @Autowired
+    private TGasDataService tGasDataService;
 
     public void init(MqttPushClient client ,MqttConfiguration mqttConfiguration) {
         this.client = client;
@@ -117,12 +125,15 @@ public class PushCallback implements MqttCallback {
         }
 
         //将json转TGasRawData备份
-        TGasRawData tGasRawData = DataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
-        tGasRawDataMapper.insert(tGasRawData);
+        TGasRawData tGasRawData = dataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
+        tGasRawDataService.saveGasRawData(tGasRawData);
 
         //mqtt数据转t_gas_data_current
 
         //mqtt数据转t_gas_data
+        List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
+        tGasDataService.batchSaveGasData(gasDataList);
+
 
         //mqtt数据转告警
 

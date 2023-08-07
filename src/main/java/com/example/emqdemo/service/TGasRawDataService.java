@@ -13,4 +13,6 @@ import com.example.emqdemo.domain.TGasRawData;
  */
 public interface TGasRawDataService extends IService<TGasRawData> {
 
+    void saveGasRawData(TGasRawData gasRawData);
+
 }

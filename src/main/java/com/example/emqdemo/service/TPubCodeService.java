@@ -13,4 +13,8 @@ import com.example.emqdemo.domain.TPubCode;
  */
 public interface TPubCodeService extends IService<TPubCode> {
 
+    void cacheGasDict();
+
+    void cacheAlarmDict();
+
 }
