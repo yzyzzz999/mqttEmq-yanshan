@@ -20,6 +20,9 @@ public class EmqdemoApplication implements ApplicationRunner {
     @Autowired
     private MqttConfiguration mqttConfiguration;
 
+    @Autowired
+    private MqttPushClient mqttPushClient;
+
 
     public static void main(String[] args) {
         SpringApplication.run(EmqdemoApplication.class, args);
@@ -36,7 +39,6 @@ public class EmqdemoApplication implements ApplicationRunner {
             if (log.isInfoEnabled()){
                 log.info("===============>>>Mqtt is run starting:<<==================");
             }
-            MqttPushClient mqttPushClient = new MqttPushClient();
             mqttPushClient.connect(mqttConfiguration);
             String[] topics= {"/values/onchange","/values/interval","/control/set","/control/resp","/alarm/upload"};
             int[] qos={2,2,2,2,2};

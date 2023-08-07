@@ -5,10 +5,13 @@ import com.example.emqdemo.util.PushCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 
 @Slf4j
+@Component
 public class MqttPushClient  {
     private static MqttClient client;
 
@@ -19,6 +22,9 @@ public class MqttPushClient  {
     public static void setClient(MqttClient client) {
         MqttPushClient.client = client;
     }
+
+    @Autowired
+    public PushCallback pushCallback;
 
 
     /**
@@ -59,7 +65,8 @@ public class MqttPushClient  {
                     mqttConfiguration.getTimeout(), mqttConfiguration.getKeepAlive());
             MqttPushClient.setClient(client);
             try {
-                client.setCallback(new PushCallback(this, mqttConfiguration));
+                pushCallback.init(this, mqttConfiguration);
+                client.setCallback(pushCallback);
                 if (!client.isConnected()) {
                     client.connect(options);
                     log.info("================>>>MQTT连接成功<<======================");
