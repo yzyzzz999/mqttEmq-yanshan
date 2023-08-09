@@ -21,7 +21,7 @@ import java.util.Date;
  * 气体报警记录表 -- 实体类
  */
 @Data
-@TableName("t_gas_data_alarm_1")
+@TableName("t_gas_data_alarm")
 public class TGasDataAlarm implements Serializable {
 
     private static final long serialVersionUID = 1L;

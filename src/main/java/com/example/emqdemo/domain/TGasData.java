@@ -21,7 +21,7 @@ import java.util.Date;
  *  -- 实体类
  */
 @Data
-@TableName("t_gas_data_1")
+@TableName("t_gas_data")
 public class TGasData implements Serializable {
 
     private static final long serialVersionUID = 1L;
