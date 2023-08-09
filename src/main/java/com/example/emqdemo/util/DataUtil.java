@@ -7,20 +7,27 @@ import com.example.emqdemo.domain.TGasData;
 import com.example.emqdemo.domain.TGasDataAlarm;
 import com.example.emqdemo.domain.TGasDataCurrent;
 import com.example.emqdemo.domain.TGasRawData;
+import com.example.emqdemo.service.TPubCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 数据处理工具
  */
 @Component
+@Slf4j
 public class DataUtil {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private TPubCodeService tPubCodeService;
 
     public TGasRawData rawDataInit(String payLoad, String seqId){
         TGasRawData tGasRawData = new TGasRawData();
@@ -33,21 +40,34 @@ public class DataUtil {
 
     public List<TGasData> gasDatasInit(Map<String, Object> mapJson, Long rawDataId) {
         List<TGasData> gasDataList = new ArrayList<>();
-        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        log.info("gasDict - {}",gasDict);
+        log.info("gasDict 生效时间：" + redisUtil.getExpire(Constants.GAS_DICT));
+        if (redisUtil.getExpire(Constants.GAS_DICT) < 0){
+            tPubCodeService.cacheGasDict();
+            gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        }
         for (String gasType:gasDict.keySet()){
             String key = gasType+ Constants.MQTT_SUFFIX;
             if (mapJson.containsKey(key)){
+                log.info("key: " + key);
                 TGasData tGasData = new TGasData();
-                tGasData.setId(IdGen.genId());
-                tGasData.setRawDataId(rawDataId);
-                tGasData.setSerialNumber((String) mapJson.get("SeqId"));
-                if (ObjectUtil.isNotNull(mapJson.get(key))){
-                    tGasData.setGasValue(new BigDecimal((String)mapJson.get(key)));
+                try {
+                    tGasData.setId(IdGen.genId());
+                    tGasData.setRawDataId(rawDataId);
+                    tGasData.setSerialNumber((String) mapJson.get("SeqId"));
+                    if (ObjectUtil.isNotNull(mapJson.get(key))){
+                        tGasData.setGasValue(new BigDecimal((String)mapJson.get(key)));
+                    }
+                    tGasData.setGasType(gasType);
+                    tGasData.setGasUnit((String) gasDict.get(gasType));
+                    tGasData.setCreateTime(new Date());
+                    tGasData.setAlarm(setAlarm((String) mapJson.get("SeqId"),gasType,tGasData.getCreateTime()));
+                }catch (Exception e){
+                    e.printStackTrace();
+                    throw e;
                 }
-                tGasData.setGasType(gasType);
-                tGasData.setGasUnit((String) gasDict.get(gasType));
-                tGasData.setCreateTime(new Date());
-                tGasData.setAlarm(setAlarm((String) mapJson.get("SeqId"),gasType,tGasData.getCreateTime()));
+                log.info("tGasData - {}",tGasData);
                 gasDataList.add(tGasData);
             }
         }
@@ -57,7 +77,11 @@ public class DataUtil {
 
     public List<TGasDataCurrent> gasDataCurrentsInit(TGasRawData tGasRawData, Map<String,Object> gasMapJson){
         List<TGasDataCurrent> tGasDataCurrentList = new ArrayList<>();
-        Map<String,Object> gasCurrentDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        Map<String,Object> gasCurrentDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        if (redisUtil.getExpire(Constants.GAS_DICT) < 0){
+            tPubCodeService.cacheGasDict();
+            gasCurrentDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        }
         for (String gasCurrentType:gasCurrentDict.keySet()){
             String key = gasCurrentType + Constants.MQTT_SUFFIX;
             if (gasMapJson.containsKey(key)){
@@ -81,7 +105,11 @@ public class DataUtil {
     public void saveAlarmStart(Map<String, Object> mapJson) {
         String alarmPoint = (String) mapJson.get("AlarmPoint");
         String device = (String) mapJson.get("AlarmDevice");
-        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        if (redisUtil.getExpire(Constants.GAS_DICT) < 0){
+            tPubCodeService.cacheGasDict();
+            gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        }
         for (String gasType:gasDict.keySet()){
             String key = gasType+ Constants.MQTT_SUFFIX;
             Date alarmStart = new Date(Long.parseLong((String) mapJson.get("AlarmStart")));
@@ -112,8 +140,13 @@ public class DataUtil {
 
     public void saveAlarmEnd(Map<String, Object> mapJson) {
         String alarmPoint = (String) mapJson.get("AlarmPoint");
+        //Four in one sensor 还是 seqID？？
         String device = (String) mapJson.get("AlarmDevice");
-        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT);
+        Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        if (redisUtil.getExpire(Constants.GAS_DICT) < 0){
+            tPubCodeService.cacheGasDict();
+            gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
+        }
         for (String gasType:gasDict.keySet()){
             String key = gasType+ Constants.MQTT_SUFFIX;
             if (alarmPoint.equals(key)){
@@ -125,7 +158,7 @@ public class DataUtil {
     public String setAlarm(String device, String gasType,Date createTime){
         String key = device +" " + gasType + Constants.MQTT_SUFFIX;
         if (redisUtil.hasKey(key)){
-            Map<String,Date> alarmSet = redisUtil.getCacheMap(key);
+            Map<String,Date> alarmSet = redisUtil.getCacheMap(key,48L, TimeUnit.HOURS);
             if (createTime.compareTo(alarmSet.get(gasType)) < 0){
                 switch (gasType){
                     case Constants.GAS_O2:

@@ -22,6 +22,10 @@ public class TGasDataCurrentServiceImpl extends ServiceImpl<TGasDataCurrentMappe
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void batchSaveGasData(List<TGasDataCurrent> tGasDataList) {
-        this.saveOrUpdateBatch(tGasDataList);
+        if (tGasDataList.isEmpty()){
+            this.saveBatch(tGasDataList);
+        }else {
+            this.saveOrUpdateBatch(tGasDataList);
+        }
     }
 }

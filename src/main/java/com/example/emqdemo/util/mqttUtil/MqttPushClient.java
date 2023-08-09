@@ -13,6 +13,8 @@ import java.io.UnsupportedEncodingException;
 @Slf4j
 @Component
 public class MqttPushClient  {
+
+
     private static MqttClient client;
 
     public static MqttClient getClient() {

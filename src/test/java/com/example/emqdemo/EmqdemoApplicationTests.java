@@ -59,6 +59,9 @@ class EmqdemoApplicationTests {
     @Autowired
     private RedisUtil redisUtil;
 
+    @Autowired
+    private TGasDataService tGasDataService;
+
 
     @Test
     void contextLoads() {
@@ -103,9 +106,8 @@ class EmqdemoApplicationTests {
     }
     @Test
     void test1() {
-        String payload = "{\"DevCode\":\"testtttttttttFour in one sensor\",\"OnlineStatus\":1,\"SendTime\":1691114944429,\"SeqId\":4,\"values\":{\"485 address\":1,\"Baud code\":3,\"CH4 concentration\":0,\"CO concentration\":0,\"Communication Status\":1,\"ETH working mode\":1,\"Embedded version\":258,\"H2S concentration\":0,\"IP Address-1\":192,\"IP Address-2\":168,\"IP Address-3\":1,\"IP Address-4\":101,\"MODBUS port\":502,\"Parity check\":0,\"Pump speed feedback\":0,\"Pump speed setting\":0,\"Pump working mode setting\":0,\"Type\":1537,\"WIFI switch\":1,\"gateway-1\":192,\"gateway-2\":168,\"gateway-3\":1,\"gateway-4\":1,\"mask-1\":255,\"mask-2\":255,\"mask-3\":255,\"mask-4\":0}}";
-//        String payload = "{\"AlarmDesc\":\"test\",\"AlarmDevice\":\"1\",\"AlarmGenValue\":\"1\",\"AlarmGuid\":\"1\",\"AlarmIndex\":\"null\",\"AlarmLevel\":\"1\",\"AlarmPoint\":\"1\",\"AlarmStart\":\"1\",\"AlarmStatus\":\"1\"}";
-        String topic = "/values/interval";
+        String payload = "{\"DevCode\":\"Four in one sensor\",\"OnlineStatus\":1,\"SendTime\":1691545922974,\"SeqId\":4,\"values\":{\"485 address\":1,\"Baud code\":3,\"CH4 concentration\":0,\"CO concentration\":0,\"Communication Status\":1,\"ETH working mode\":1,\"Embedded version\":258,\"H2S concentration\":0,\"IP Address-1\":192,\"IP Address-2\":168,\"IP Address-3\":1,\"IP Address-4\":101,\"MODBUS port\":502,\"Parity check\":0,\"Pump speed feedback\":0,\"Pump speed setting\":0,\"Pump working mode setting\":0,\"Type\":1537,\"WIFI switch\":1,\"gateway-1\":192,\"gateway-2\":168,\"gateway-3\":1,\"gateway-4\":1,\"mask-1\":255,\"mask-2\":255,\"mask-3\":255,\"mask-4\":0}}";
+        String topic = "/values/onchange";
         Map<String,Object> mapJson = messageResolve(JSONObject.parseObject(payload),topic);
 //        JSONObject json = JSONObject.parseObject(payload);
 //        Map<String,Object> mapJson = json.getInnerMap();
@@ -117,10 +119,8 @@ class EmqdemoApplicationTests {
         //将json转TGasRawData备份
         TGasRawData tGasRawData = dataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
         tGasRawDataService.saveGasRawData(tGasRawData);
-
-        //mqtt数据转t_gas_data_current
-        List<TGasDataCurrent> tGasDataCurrentList = dataUtil.gasDataCurrentsInit(tGasRawData,mapJson);
-        tGasDataCurrentService.batchSaveGasData(tGasDataCurrentList);
+        List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
+        tGasDataService.batchSaveGasData(gasDataList);
 
     }
 
@@ -256,7 +256,7 @@ class EmqdemoApplicationTests {
         Map<String,Object> ymlmap = ymlAnalysis.getValue();
         for(String key:ymlmap.keySet()){
             if (keySet.stream().noneMatch(ket -> ket.equals(ymlmap.get(key)))) {
-                str.append(key + ",");
+                str.append(key).append(", ");
             }
         }
         if(str.length() > 0){

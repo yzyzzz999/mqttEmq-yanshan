@@ -187,6 +187,21 @@ public class RedisUtil {
     }
 
     /**
+     * 获得缓存的Map并刷新
+     *
+     * @param key
+     * @param timeout
+     * @param unit
+     * @return
+     */
+    public <T> Map<String, T> getCacheMap(final String key,final long timeout, final TimeUnit unit) {
+        if (hasKey(key)){
+            redisTemplate.expire(key,timeout,unit);
+        }
+        return redisTemplate.opsForHash().entries(key);
+    }
+
+    /**
      * 往Hash中存入数据
      *
      * @param key   Redis键

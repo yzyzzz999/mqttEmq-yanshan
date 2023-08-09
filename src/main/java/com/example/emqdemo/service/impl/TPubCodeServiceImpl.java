@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -38,6 +39,7 @@ public class TPubCodeServiceImpl extends ServiceImpl<TPubCodeMapper, TPubCode> i
         gasDict.put(Constants.GAS_O2,Constants.UNIT_O2);
         gasDict.put(Constants.GAS_CH4,Constants.UNIT_CH4);
         redisUtil.setCacheMap(Constants.GAS_DICT,gasDict);
+        redisUtil.expire(Constants.GAS_DICT,48L, TimeUnit.HOURS);
     }
 
     /**
@@ -51,6 +53,7 @@ public class TPubCodeServiceImpl extends ServiceImpl<TPubCodeMapper, TPubCode> i
         alarmDict.put(Constants.GAS_O2,Constants.ALARM_O2);
         alarmDict.put(Constants.GAS_CH4,Constants.ALARM_CH4);
         redisUtil.setCacheMap(Constants.ALARM_DICT,alarmDict);
+        redisUtil.expire(Constants.ALARM_DICT,48L, TimeUnit.HOURS);
 
     }
 }

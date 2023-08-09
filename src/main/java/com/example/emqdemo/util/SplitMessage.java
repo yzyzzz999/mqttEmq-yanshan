@@ -21,7 +21,7 @@ public class SplitMessage {
         Map<String,Object> ymlmap = ymlAnalysis.getValue();
         for(String key:ymlmap.keySet()){
             if (keySet.stream().noneMatch(ket -> ket.equals(ymlmap.get(key)))) {
-                str.append(key + ",");
+                str.append(key).append(", ");
             }
         }
         if(str.length() > 0){

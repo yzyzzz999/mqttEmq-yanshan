@@ -15,10 +15,11 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -51,25 +52,39 @@ public class PushCallback implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable cause) {
-        /* 连接丢失后，一般在这里面进行重连 **/
-        if(client != null) {
-            while (true) {
-                try {
-                    log.info("==============》》》[MQTT] 连接断开，2S之后尝试重连...");
-                    Thread.sleep(2000);
-                    MqttPushClient mqttPushClient = new MqttPushClient();
-                    mqttPushClient.connect(mqttConfiguration);
-                    if(MqttPushClient.getClient().isConnected()){
-                        log.info("=============>>重连成功");
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
+        final Future<?> []futures = {null};
+        futures[0] = executorService.scheduleWithFixedDelay(new TimerTask() {
+            @Override
+            public void run() {
+                /* 连接丢失后，一般在这里面进行重连 **/
+                if(client != null) {
+                    try {
+                        log.info("==============》》》[MQTT] 连接断开，2S之后尝试重连...");
+//                    MqttPushClient mqttPushClient = new MqttPushClient();
+                        client.connect(mqttConfiguration);
+                        if(MqttPushClient.getClient().isConnected()){
+                            log.info("=============>>重连成功");
+                            Future<?> future;
+                            while (null == (future = futures[0])) {
+                                Thread.yield();
+                            }
+                            future.cancel(false);
+                            return;
+                        }
+//                        break;
+                    } catch (Exception e) {
+                        log.error("=============>>>[MQTT] 连接断开，重连失败！<<=============");
+                        e.printStackTrace();
+                        run();
+//                            continue;
                     }
-                    break;
-                } catch (Exception e) {
-                    log.error("=============>>>[MQTT] 连接断开，重连失败！<<=============");
-                    continue;
+
                 }
+                log.info(cause.getMessage());
+
             }
-        }
-        log.info(cause.getMessage());
+        },0,2,TimeUnit.SECONDS);
     }
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
@@ -88,7 +103,6 @@ public class PushCallback implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) {
         // subscribe后得到的消息会执行到这里面
         String payload = new String(message.getPayload());
-
         log.info("============》》接收消息主题 : " + topic);
         log.info("============》》接收消息Qos : " + message.getQos());
         log.info("============》》接收消息内容 : " + payload);
@@ -97,45 +111,50 @@ public class PushCallback implements MqttCallback {
 
         //将json转map,方便读取数据
         Map<String,Object> mapJson = messageResolve(JSONObject.parseObject(payload),topic);
-
         if (mapJson.get("SeqId") == null){
             log.info("======》》设备ID不存在!!");
             return;
         }
-
         //将json转TGasRawData备份
         TGasRawData tGasRawData = dataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
         tGasRawDataService.saveGasRawData(tGasRawData);
-
+        log.info("原始数据备份到t_gas_raw_data！");
         if (!"4".equals(mapJson.get("SeqId").toString())){
-            //数据入库
-            if (!saveMessage(mapJson,topic)){
-                log.info("======》》接收ID : " + message.getId() + "==》》未识别的topic - {}",payload);
-            }
-        }else {
-            switch (topic){
-                case Topic.VALUES_INTERVAL:
-                case Topic.VALUES_ONCHANGE:
-                    //mqtt数据转t_gas_data
-                    List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
-                    tGasDataService.batchSaveGasData(gasDataList);
-                    //mqtt数据转t_gas_data_current
-                    List<TGasDataCurrent> tGasDataCurrentList = dataUtil.gasDataCurrentsInit(tGasRawData,mapJson);
-                    tGasDataCurrentService.batchSaveGasData(tGasDataCurrentList);
-                    break;
-                case Topic.ALARM_UPLOAD:
-                    dataUtil.saveAlarmStart(mapJson);
-                    break;
-                case Topic.ALARM_UPOVERLOAD:
-                    dataUtil.saveAlarmEnd(mapJson);
-                    break;
-
-                default:
-
-            }
+            log.info("锂电池数据暂不做其他处理！");
+            return;
         }
-
-
+        //转存
+        switch (topic){
+            case Topic.VALUES_INTERVAL:
+            case Topic.VALUES_ONCHANGE:
+                //mqtt数据转t_gas_data
+                log.info("数据转存全量表t_gas_data");
+                try{
+                    List<TGasData> gasDataList = dataUtil.gasDatasInit(mapJson,tGasRawData.getId());
+                    log.info("gasDataList - {}",gasDataList);
+                    tGasDataService.batchSaveGasData(gasDataList);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                //mqtt数据转t_gas_data_current
+                log.info("数据转存当前表t_gas_data_current");
+                try{
+                    List<TGasDataCurrent> tGasDataCurrentList = dataUtil.gasDataCurrentsInit(tGasRawData,mapJson);
+                    log.info("tGasDataCurrentList - {}",tGasDataCurrentList);
+                    tGasDataCurrentService.batchSaveGasData(tGasDataCurrentList);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
+            case Topic.ALARM_UPLOAD:
+                dataUtil.saveAlarmStart(mapJson);
+                break;
+            case Topic.ALARM_UPOVERLOAD:
+                dataUtil.saveAlarmEnd(mapJson);
+                break;
+            default:
+                log.info("======》》接收ID : " + message.getId() + "==》》未识别的topic - {}",payload);
+        }
     }
 
     /**
@@ -165,7 +184,6 @@ public class PushCallback implements MqttCallback {
         //拆分
         JSONObject getJson = JSONObject.parseObject((String)mapJson.get("values"));
         Map<String,Object> newmap = getJson.getInnerMap();
-        System.out.println("newmap:"+newmap.keySet());
         String msg = String.valueOf(json.get("values"));
         Map<String,Object> returnMap= JSON.parseObject(msg, HashMap.class);
         for(String key : newmap.keySet()){
