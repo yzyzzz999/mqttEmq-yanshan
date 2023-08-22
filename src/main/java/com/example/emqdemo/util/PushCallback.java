@@ -111,15 +111,16 @@ public class PushCallback implements MqttCallback {
 
         //将json转map,方便读取数据
         Map<String,Object> mapJson = messageResolve(JSONObject.parseObject(payload),topic);
-        if (mapJson.get("SeqId") == null){
+        if (mapJson.get("SeqId") == null && mapJson.get("AlarmDevice") == null){
             log.info("======》》设备ID不存在!!");
             return;
         }
         //将json转TGasRawData备份
-        TGasRawData tGasRawData = dataUtil.rawDataInit(payload,mapJson.get("SeqId").toString());
+        String serialNumber = (mapJson.get("SeqId") != null ? mapJson.get("SeqId"):mapJson.get("AlarmDevice")).toString();
+        TGasRawData tGasRawData = dataUtil.rawDataInit(payload,serialNumber);
         tGasRawDataService.saveGasRawData(tGasRawData);
         log.info("原始数据备份到t_gas_raw_data！");
-        if (!"4".equals(mapJson.get("SeqId").toString())){
+        if ("5".equals(mapJson.get("SeqId").toString())){
             log.info("锂电池数据暂不做其他处理！");
             return;
         }
@@ -147,7 +148,7 @@ public class PushCallback implements MqttCallback {
                 }
                 break;
             case Topic.ALARM_UPLOAD:
-                log.info("告警处理（开始），到缓存");
+                log.info("save alarmStart to cache");
                 try {
                     dataUtil.saveAlarmStart(mapJson);
                 }catch (Exception e){
@@ -155,7 +156,7 @@ public class PushCallback implements MqttCallback {
                 }
                 break;
             case Topic.ALARM_UPOVERLOAD:
-                log.info("告警处理（结束），到缓存");
+                log.info("save slarmDelete to cache");
                 try {
                     dataUtil.saveAlarmEnd(mapJson);
                 }catch (Exception e){
@@ -163,6 +164,9 @@ public class PushCallback implements MqttCallback {
                 }
                 break;
             default:
+                log.info("123456789");
+                log.info("123456789");
+                log.info("123456789");
                 log.info("======》》接收ID : " + message.getId() + "==》》未识别的topic - {}",payload);
         }
     }

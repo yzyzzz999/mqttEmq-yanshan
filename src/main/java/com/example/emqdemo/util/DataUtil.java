@@ -84,6 +84,7 @@ public class DataUtil {
                 gasDataList.add(tGasData);
             }
         }
+        log.info("abcdefg");
         log.info("tGasDataAlarmList - {}", tGasDataAlarmList);
         if (ObjectUtil.isNotEmpty(tGasDataAlarmList)){
             tGasDataAlarmService.saveBatch(tGasDataAlarmList);
@@ -120,6 +121,7 @@ public class DataUtil {
     }
 
     public void saveAlarmStart(Map<String, Object> mapJson) {
+        log.info("alarm123456789");
         String alarmPoint = (String) mapJson.get("AlarmPoint");
         String device = (String) mapJson.get("AlarmDevice");
         log.info("alarmPoint: " + alarmPoint);
@@ -168,7 +170,6 @@ public class DataUtil {
 
     public void saveAlarmEnd(Map<String, Object> mapJson) {
         String alarmPoint = (String) mapJson.get("AlarmPoint");
-        //Four in one sensor 还是 seqID？？
         String device = (String) mapJson.get("AlarmDevice");
         log.info("alarmPoint: " + alarmPoint);
         log.info("device: "+ device);
