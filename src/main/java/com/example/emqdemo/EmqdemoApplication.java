@@ -31,10 +31,9 @@ public class EmqdemoApplication implements ApplicationRunner {
     /**
      * mqtt 初始化
      * @param args
-     * @throws Exception
      */
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         if(true){
             if (log.isInfoEnabled()){
                 log.info("===============>>>Mqtt is run starting:<<==================");

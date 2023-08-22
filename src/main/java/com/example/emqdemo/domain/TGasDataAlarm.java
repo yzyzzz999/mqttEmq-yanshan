@@ -3,6 +3,7 @@ package com.example.emqdemo.domain;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -67,30 +68,6 @@ public class TGasDataAlarm implements Serializable {
      */
     @TableField("gas_unit")
     private String gasUnit;
-
-    /**
-     * 高报值
-     */
-    @TableField("upper_alarm")
-    private BigDecimal upperAlarm;
-
-    /**
-     * 低报值
-     */
-    @TableField("lower_alarm")
-    private BigDecimal lowerAlarm;
-
-    /**
-     * 高不报值
-     */
-    @TableField("upper_no_alarm")
-    private BigDecimal upperNoAlarm;
-
-    /**
-     * 低不报值
-     */
-    @TableField("lower_no_alarm")
-    private BigDecimal lowerNoAlarm;
 
     /**
      * 气体数据上报时间

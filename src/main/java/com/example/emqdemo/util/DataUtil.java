@@ -1,5 +1,6 @@
 package com.example.emqdemo.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.example.emqdemo.compoent.RedisUtil;
 import com.example.emqdemo.constants.Constants;
@@ -7,6 +8,7 @@ import com.example.emqdemo.domain.TGasData;
 import com.example.emqdemo.domain.TGasDataAlarm;
 import com.example.emqdemo.domain.TGasDataCurrent;
 import com.example.emqdemo.domain.TGasRawData;
+import com.example.emqdemo.service.TGasDataAlarmService;
 import com.example.emqdemo.service.TPubCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class DataUtil {
     @Autowired
     private TPubCodeService tPubCodeService;
 
+    @Autowired
+    private TGasDataAlarmService tGasDataAlarmService;
+
     public TGasRawData rawDataInit(String payLoad, String seqId){
         TGasRawData tGasRawData = new TGasRawData();
         tGasRawData.setId(IdGen.genId());
@@ -40,6 +45,7 @@ public class DataUtil {
 
     public List<TGasData> gasDatasInit(Map<String, Object> mapJson, Long rawDataId) {
         List<TGasData> gasDataList = new ArrayList<>();
+        List<TGasDataAlarm> tGasDataAlarmList = new ArrayList<>();
         Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
         log.info("gasDict - {}",gasDict);
         log.info("gasDict 生效时间：" + redisUtil.getExpire(Constants.GAS_DICT));
@@ -63,6 +69,13 @@ public class DataUtil {
                     tGasData.setGasUnit((String) gasDict.get(gasType));
                     tGasData.setCreateTime(new Date());
                     tGasData.setAlarm(setAlarm((String) mapJson.get("SeqId"),gasType,tGasData.getCreateTime()));
+                    if (!tGasData.getAlarm().equals(Constants.ALARM_NORMAL)){
+                        TGasDataAlarm tGasDataAlarm = new TGasDataAlarm();
+                        BeanUtil.copyProperties(tGasData, tGasDataAlarm, "id");
+                        tGasDataAlarm.setId(IdGen.genId());
+                        log.info("tGasDataAlarm - {}",tGasDataAlarm);
+                        tGasDataAlarmList.add(tGasDataAlarm);
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                     throw e;
@@ -70,6 +83,10 @@ public class DataUtil {
                 log.info("tGasData - {}",tGasData);
                 gasDataList.add(tGasData);
             }
+        }
+        log.info("tGasDataAlarmList - {}", tGasDataAlarmList);
+        if (ObjectUtil.isNotEmpty(tGasDataAlarmList)){
+            tGasDataAlarmService.saveBatch(tGasDataAlarmList);
         }
 
         return gasDataList;
@@ -93,7 +110,7 @@ public class DataUtil {
                 if (ObjectUtil.isNotNull(gasMapJson.get(key))){
                     tGasDataCurrent.setGasValue(new BigDecimal(String.valueOf(gasMapJson.get(key))));
                 }
-                tGasDataCurrent.setGasType(key);
+                tGasDataCurrent.setGasType(gasCurrentType);
                 tGasDataCurrent.setGasUnit((String) gasCurrentDict.get(gasCurrentType));
                 tGasDataCurrent.setCreateTime(new Date());
                 tGasDataCurrentList.add(tGasDataCurrent);
@@ -105,6 +122,9 @@ public class DataUtil {
     public void saveAlarmStart(Map<String, Object> mapJson) {
         String alarmPoint = (String) mapJson.get("AlarmPoint");
         String device = (String) mapJson.get("AlarmDevice");
+        log.info("alarmPoint: " + alarmPoint);
+        log.info("device: "+ device);
+        device = "Four in one sensor".equals(device)? "4":device;
         Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
         if (redisUtil.getExpire(Constants.GAS_DICT) < 0){
             tPubCodeService.cacheGasDict();
@@ -119,18 +139,26 @@ public class DataUtil {
                     case Constants.GAS_O2:
                         alarmSet.put(Constants.ALARM_O2,alarmStart);
                         redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        log.info("key: " + device +" " + alarmPoint);
+                        log.info("value: " + redisUtil.getCacheMap(device +" " + alarmPoint));
                         break;
                     case Constants.GAS_CH4:
                         alarmSet.put(Constants.ALARM_CH4,alarmStart);
                         redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        log.info("key: " + device +" " + alarmPoint);
+                        log.info("value: " + redisUtil.getCacheMap(device +" " + alarmPoint));
                         break;
                     case Constants.GAS_H2S:
                         alarmSet.put(Constants.ALARM_H2S,alarmStart);
                         redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        log.info("key: " + device +" " + alarmPoint);
+                        log.info("value: " + redisUtil.getCacheMap(device +" " + alarmPoint));
                         break;
                     case Constants.GAS_CO:
                         alarmSet.put(Constants.ALARM_CO,alarmStart);
                         redisUtil.setCacheMap(device +" " + alarmPoint,alarmSet);
+                        log.info("key: " + device +" " + alarmPoint);
+                        log.info("value: " + redisUtil.getCacheMap(device +" " + alarmPoint));
                         break;
                     default:
                 }
@@ -142,6 +170,9 @@ public class DataUtil {
         String alarmPoint = (String) mapJson.get("AlarmPoint");
         //Four in one sensor 还是 seqID？？
         String device = (String) mapJson.get("AlarmDevice");
+        log.info("alarmPoint: " + alarmPoint);
+        log.info("device: "+ device);
+        device = "Four in one sensor".equals(device)? "4":device;
         Map<String,Object> gasDict = redisUtil.getCacheMap(Constants.GAS_DICT,48L, TimeUnit.HOURS);
         if (redisUtil.getExpire(Constants.GAS_DICT) < 0){
             tPubCodeService.cacheGasDict();
@@ -157,6 +188,7 @@ public class DataUtil {
 
     public String setAlarm(String device, String gasType,Date createTime){
         String key = device +" " + gasType + Constants.MQTT_SUFFIX;
+        log.info("setAlarm? device: "+ device);
         if (redisUtil.hasKey(key)){
             Map<String,Date> alarmSet = redisUtil.getCacheMap(key,48L, TimeUnit.HOURS);
             if (createTime.compareTo(alarmSet.get(gasType)) < 0){
