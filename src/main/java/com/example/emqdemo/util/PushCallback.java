@@ -147,10 +147,20 @@ public class PushCallback implements MqttCallback {
                 }
                 break;
             case Topic.ALARM_UPLOAD:
-                dataUtil.saveAlarmStart(mapJson);
+                log.info("告警处理（开始），到缓存");
+                try {
+                    dataUtil.saveAlarmStart(mapJson);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             case Topic.ALARM_UPOVERLOAD:
-                dataUtil.saveAlarmEnd(mapJson);
+                log.info("告警处理（结束），到缓存");
+                try {
+                    dataUtil.saveAlarmEnd(mapJson);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             default:
                 log.info("======》》接收ID : " + message.getId() + "==》》未识别的topic - {}",payload);
